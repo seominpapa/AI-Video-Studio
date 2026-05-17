@@ -1,0 +1,5 @@
+**/__pycache__/
+*.pyc
+tools/transcription/.venv/
+**/node_modules/
+**/.remotion/
