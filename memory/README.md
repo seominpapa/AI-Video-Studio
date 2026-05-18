@@ -12,6 +12,8 @@
 - 루트 `README.md`는 GitHub 저장소 방문자를 위한 온보딩 문서로 유지합니다. 에이전트 운영 규칙의 원문은 `AGENTS.md`를 기준으로 합니다.
 - 작업 폴더 루트 `README.md`는 만들거나 참조하지 않습니다. 작업별 상세 기록은 최종 응답과 필요한 산출물 경로로 정리합니다.
 - 음성 원본 파일은 HyperFrames와 Remotion 공통 소스이므로 각 작업 폴더 루트의 `voiceover.wav`를 기준으로 관리합니다.
+- 큰 영상 작업은 Orchestrator 중심의 서브에이전트 구성으로 나눌 수 있으며, Remotion Agent와 HyperFrames Agent는 사용자 요청 또는 Orchestrator 선택에 따라 조건부로 실행합니다.
+- 작업별 서브에이전트 지시서는 해당 작업 폴더의 `agent-briefs/`에 둡니다.
 
 ## 반복 작업 규칙
 

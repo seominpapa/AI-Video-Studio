@@ -56,6 +56,39 @@
 - 음성 원본 파일은 HyperFrames와 Remotion에서 공통으로 쓰는 소스이므로 작업 폴더 루트에 둡니다. 예: `YYYYMMDD_작업제목/voiceover.wav`
 - 도구 구조상 Remotion `public/` 같은 별도 위치에 복사본이나 링크가 꼭 필요하면 루트 음성 파일을 원본 기준으로 삼고, 도구별 파일은 렌더용 사본으로만 취급합니다.
 
+## 서브에이전트 병렬 작업 규칙
+
+영상 생성 작업을 서브에이전트로 나눌 때는 Orchestrator가 전체 판단권과 최종 책임을 가집니다. Orchestrator는 사용자 요구사항, 사용할 도구, 작업 폴더, 공통 타임라인, 디자인 방향, QA 수정 우선순위, 최종 렌더 승인 여부를 결정합니다.
+
+기본 구성:
+
+```text
+Orchestrator
+  Intake/Sync Agent
+  Design Agent
+  Remotion Agent        optional
+  HyperFrames Agent     optional
+  QA Agent
+  Render/Packaging Agent
+```
+
+- Intake/Sync Agent는 음성 길이 확인, 로컬 전사, `transcript/sentences.json`, 장면 타임라인 표를 담당합니다. 이 결과가 최종 싱크 기준입니다.
+- Design Agent는 `DESIGN.md` 기준의 전체 비주얼 시스템, 안전 영역, 인포그래픽 구조, 텍스트 밀도, 장면별 디자인 브리프를 담당합니다. 공통 스타일 설계는 Sync Agent와 병렬로 할 수 있지만, 장면별 정확한 배치와 전환 타이밍은 Orchestrator가 타임라인을 승인한 뒤 확정합니다.
+- Remotion Agent는 사용자가 Remotion을 요구했거나 Orchestrator가 Remotion을 선택한 경우에만 실행하며, `remotion-project/`만 담당합니다.
+- HyperFrames Agent는 사용자가 HyperFrames를 요구했거나 Orchestrator가 HyperFrames를 선택한 경우에만 실행하며, `source-hyperframes/`만 담당합니다.
+- QA Agent는 장면별 샘플 프레임 목록, 텍스트와 인포그래픽 겹침, 장면 시작/중간/종료 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부를 검수합니다. 검수 기준과 샘플링 계획은 구현과 병렬로 준비할 수 있지만, 최종 합격 판정은 렌더 이후에만 합니다.
+- Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
+- 작업별 서브에이전트 지시가 필요하면 작업 폴더 안의 `agent-briefs/`에 역할별 brief를 둡니다. 공통 역할 정의를 루트에 별도 폴더로 만들지 않고, 실제 실행 지시만 작업별로 기록합니다.
+
+도구 선택 규칙:
+
+- 사용자가 "Remotion으로"라고 요청하면 Remotion Agent만 실행하고 HyperFrames Agent는 실행하지 않습니다.
+- 사용자가 "HyperFrames로"라고 요청하면 HyperFrames Agent만 실행하고 Remotion Agent는 실행하지 않습니다.
+- 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
+- 사용자가 도구를 명시하지 않으면 Orchestrator가 작업 성격에 맞는 도구를 선택하거나, 선택 기준이 불명확한 경우 사용자에게 확인합니다.
+
+병렬 작업은 공통 타임라인이 확정된 뒤 구현 단계에서 가장 안전합니다. `voiceover.wav`, `transcript/sentences.json`, 승인된 장면 타임라인은 모든 구현 Agent가 공유하는 기준으로 잠그고, Agent끼리는 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+
 ## 새 작업 폴더 규칙
 
 루트 폴더에서 영상 제작, 모션그래픽, Remotion, HyperFrames 작업을 요청받으면 먼저 현재 날짜와 작업 제목으로 아래 형식의 폴더를 만듭니다.
@@ -79,6 +112,7 @@ YYYYMMDD_작업제목
 ```text
 YYYYMMDD_작업제목/
   voiceover.wav
+  agent-briefs/
   remotion-project/
   source-hyperframes/
   assets/

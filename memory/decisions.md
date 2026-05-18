@@ -18,3 +18,5 @@
 ## 2026-05-18
 
 - 프로젝트 루트 폴더명은 `AI Video Studio`입니다. 문서와 예시 경로에서도 이 이름을 기준으로 사용합니다.
+- 영상 생성 작업을 병렬화할 때는 Orchestrator가 전체 판단권과 최종 책임을 갖고, Intake/Sync, Design, QA, Render/Packaging Agent를 기본 구성으로 둡니다. Remotion Agent와 HyperFrames Agent는 사용자 요청 또는 Orchestrator 선택에 따라 조건부로 실행합니다.
+- 공통 에이전트 프로필 폴더는 루트에 만들지 않고, 작업별 실행 지시가 필요할 때만 날짜형 작업 폴더 안의 `agent-briefs/`에 역할별 brief를 둡니다.

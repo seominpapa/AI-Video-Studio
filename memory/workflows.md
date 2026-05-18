@@ -19,7 +19,7 @@
 
 1. 루트 `DESIGN.md`와 `AGENTS.md`를 확인합니다.
 2. 음성 파일이 있는지 확인합니다. 없으면 사용자에게 요청합니다.
-3. `YYYYMMDD_작업제목` 폴더를 만들고 하위 폴더를 구성합니다.
+3. `YYYYMMDD_작업제목` 폴더를 만들고 하위 폴더를 구성합니다. 서브에이전트 지시가 필요하면 `agent-briefs/`도 함께 만듭니다.
 4. 음성 원본 파일을 작업 폴더 루트의 `voiceover.wav`로 둡니다.
 5. 음성 길이를 확인합니다.
 6. 스크립트를 장면 단위 타임라인으로 나눕니다.
@@ -37,6 +37,19 @@
 3. 새 작업 프롬프트에는 영상 목적, 화면비, 길이, 음성 파일 경로, 대본, 원하는 도구(Remotion 또는 HyperFrames), 디자인 기준(`DESIGN.md` 우선), 출력 파일명을 포함합니다.
 4. Remotion은 React/TypeScript 컴포지션을 작성해 `npx.cmd remotion render`로 MP4를 만듭니다.
 5. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
+
+## Subagent video production
+
+1. Orchestrator가 사용자 요구사항, 도구 선택, 작업 폴더, 공통 타임라인, 디자인 방향, QA 수정 우선순위, 최종 렌더 승인 여부를 결정합니다.
+2. Intake/Sync Agent가 음성 길이, 로컬 전사, `transcript/sentences.json`, 장면 타임라인 표를 만듭니다.
+3. Design Agent가 `DESIGN.md` 기준 비주얼 시스템, 안전 영역, 인포그래픽 구조, 텍스트 밀도, 장면별 디자인 브리프를 만듭니다. 공통 스타일 설계는 Sync와 병렬 가능하지만 장면별 정확한 타이밍은 타임라인 승인 뒤 확정합니다.
+4. 사용자가 Remotion을 요구하면 Remotion Agent만 `remotion-project/`를 담당합니다.
+5. 사용자가 HyperFrames를 요구하면 HyperFrames Agent만 `source-hyperframes/`를 담당합니다.
+6. 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
+7. QA Agent는 샘플 프레임 목록, 텍스트 겹침, 장면 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부를 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
+8. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
+9. 모든 구현 Agent는 `voiceover.wav`, `transcript/sentences.json`, 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+10. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
 
 ## Git ignore policy
 

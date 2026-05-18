@@ -48,11 +48,65 @@ voiceover.wav와 대본을 기준으로 장면 타이밍을 맞추고,
 - `tools/transcription/`: 음성 파일을 로컬에서 전사하는 도구
 - `memory/`: 장기 운영 결정과 반복 워크플로 메모
 
+## 프로젝트 파일 구조
+
+루트에는 반복 영상 제작에 필요한 공통 문서와 도구만 둡니다. 실제 영상 소스, 검수 프레임, 렌더 파일은 날짜형 작업 폴더 안에서 관리합니다.
+
+```text
+AI Video Studio/
+  README.md
+  AGENTS.md
+  DESIGN.md
+  LICENSE
+  .gitignore
+  memory/
+    README.md
+    decisions.md
+    mistakes.md
+    workflows.md
+  tools/
+    transcription/
+      README.md
+      requirements.txt
+      transcribe.py
+      tests/
+        test_transcribe.py
+  YYYYMMDD_작업제목/
+    voiceover.wav
+    agent-briefs/
+    assets/
+    transcript/
+    remotion-project/
+    source-hyperframes/
+    review-frames/
+    outputs/
+```
+
+각 항목의 역할은 다음과 같습니다.
+
+- `README.md`: 사람이 처음 읽는 온보딩 문서입니다.
+- `AGENTS.md`: Codex가 영상 작업 중 반드시 따라야 하는 운영 규칙입니다.
+- `DESIGN.md`: 모든 Remotion, HyperFrames 영상 작업에 적용하는 공통 디자인 기준입니다.
+- `LICENSE`: 프로젝트의 MIT 라이선스입니다.
+- `.gitignore`: 날짜형 작업 폴더, 렌더 결과, 음성 원본, 검수 프레임, 로컬 의존성을 Git 추적에서 제외합니다.
+- `memory/`: 장기 운영 결정, 반복 실수 방지 메모, 안정화된 워크플로를 짧게 기록합니다.
+- `tools/transcription/`: `voiceover.wav`에서 문장별 타임코드를 만들기 위한 로컬 전사 도구입니다.
+- `YYYYMMDD_작업제목/`: 개별 영상 작업 공간입니다. 새 영상 작업마다 새로 만들며 기본적으로 GitHub에 올리지 않습니다.
+- `voiceover.wav`: 해당 작업의 원본 음성 기준 파일입니다.
+- `agent-briefs/`: 작업별 서브에이전트 지시서를 둡니다. 예를 들어 `orchestrator.md`, `intake-sync.md`, `design.md`, `remotion.md`, `hyperframes.md`, `qa.md`, `render-packaging.md`처럼 역할별 입력, 출력, 쓰기 범위를 정리합니다.
+- `assets/`: 작업별 이미지, 폰트, 참고 자료 같은 보조 자산을 둡니다.
+- `transcript/`: 로컬 전사 결과와 타임라인 기준 파일을 둡니다.
+- `remotion-project/`: Remotion으로 구현할 때 사용하는 프로젝트 소스 폴더입니다.
+- `source-hyperframes/`: HyperFrames로 구현할 때 사용하는 소스 폴더입니다.
+- `review-frames/`: 장면별 대표 프레임, 컨택트 시트, 검수용 이미지를 둡니다.
+- `outputs/`: 최종 MP4와 렌더 결과물을 둡니다.
+
 새 영상 프로젝트는 실행할 때마다 날짜형 작업 폴더로 생성됩니다.
 
 ```text
 YYYYMMDD_작업제목/
   voiceover.wav
+  agent-briefs/
   remotion-project/
   source-hyperframes/
   assets/
@@ -91,6 +145,47 @@ Codex는 이 정보를 바탕으로 다음 일을 처리합니다.
 6. Remotion 또는 HyperFrames 코드 작성
 7. 대표 프레임 렌더링 및 레이아웃 검수
 8. 최종 MP4 렌더링
+
+## 서브에이전트 병렬 작업
+
+큰 영상 작업은 Orchestrator가 중심이 되어 여러 서브에이전트로 나눌 수 있습니다. 다만 음성 파일 확보, 전사 타임코드 생성, 장면 타임라인 확정은 먼저 정리되어야 합니다. 그 뒤 디자인, 구현, 검수 준비를 병렬로 진행하는 방식이 가장 안전합니다.
+
+기본 구성:
+
+```text
+Orchestrator
+  Intake/Sync Agent
+  Design Agent
+  Remotion Agent        optional
+  HyperFrames Agent     optional
+  QA Agent
+  Render/Packaging Agent
+```
+
+- Orchestrator: 사용자 요구 해석, 도구 선택, 작업 폴더 생성, 타임라인 승인, 디자인 승인, QA 수정 지시, 최종 렌더 승인
+- Intake/Sync Agent: 음성 길이 확인, 로컬 전사, `transcript/sentences.json`, 장면 타임라인 표 작성
+- Design Agent: `DESIGN.md` 기준 비주얼 시스템, 안전 영역, 인포그래픽 구조, 텍스트 밀도, 장면별 디자인 브리프 작성
+- Remotion Agent: Remotion 요청 또는 선택 시 `remotion-project/` 구현
+- HyperFrames Agent: HyperFrames 요청 또는 선택 시 `source-hyperframes/` 구현
+- QA Agent: 샘플 프레임 계획, 텍스트 겹침, 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부 검수
+- Render/Packaging Agent: 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리
+
+작업별 지시가 길어지면 `agent-briefs/`에 역할별 brief를 만들어 둡니다. 이 폴더는 실제 에이전트 실행을 위한 작업별 지시서 공간이며, 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
+
+도구별 실행 모드는 이렇게 나뉩니다.
+
+```text
+Remotion 요청
+→ Orchestrator → Intake/Sync → Design → Remotion Agent → QA → Render/Packaging
+
+HyperFrames 요청
+→ Orchestrator → Intake/Sync → Design → HyperFrames Agent → QA → Render/Packaging
+
+두 도구 비교 요청
+→ Orchestrator → Intake/Sync → Design
+→ Remotion Agent + HyperFrames Agent 병렬
+→ QA 비교 → Render/Packaging
+```
 
 ## 음성 파일이 중요한 이유
 
