@@ -21,10 +21,8 @@ Codex Desktop App에서 영상 제작을 하기 위한 작업실입니다.
 ```text
 AGENTS.md와 DESIGN.md 기준으로 진행해줘.
 새 영상 작업 폴더를 만들고 Remotion으로 16:9 모션그래픽 영상을 만들어줘.
-음성 파일은 내가 제공할 voiceover.wav를 사용해줘.
-대본은 아래 내용이야:
-
-...
+첨부한 음성 파일과 스크립트 파일을 사용해줘.
+스크립트 파일은 음성용 정리 규칙에 맞게 변환해서 작업 폴더로 옮겨줘.
 
 장면별 타임라인을 만들고, 대표 프레임 검수 후 outputs/final.mp4로 렌더해줘.
 ```
@@ -34,7 +32,7 @@ AGENTS.md와 DESIGN.md 기준으로 진행해줘.
 ```text
 AGENTS.md와 DESIGN.md 기준으로 진행해줘.
 이번 작업은 HyperFrames로 만들어줘.
-voiceover.wav와 대본을 기준으로 장면 타이밍을 맞추고,
+첨부한 voiceover.wav와 스크립트 파일을 기준으로 장면 타이밍을 맞추고,
 검증 후 outputs/hyperframes-render.mp4로 렌더해줘.
 ```
 
@@ -73,6 +71,7 @@ AI Video Studio/
         test_transcribe.py
   YYYYMMDD_작업제목/
     voiceover.wav
+    script/
     agent-briefs/
     assets/
     transcript/
@@ -93,6 +92,7 @@ AI Video Studio/
 - `tools/transcription/`: `voiceover.wav`에서 문장별 타임코드를 만들기 위한 로컬 전사 도구입니다.
 - `YYYYMMDD_작업제목/`: 개별 영상 작업 공간입니다. 새 영상 작업마다 새로 만들며 기본적으로 GitHub에 올리지 않습니다.
 - `voiceover.wav`: 해당 작업의 원본 음성 기준 파일입니다.
+- `script/`: 첨부한 스크립트 원본과 음성용으로 변환한 `narration-script.txt`를 둡니다.
 - `agent-briefs/`: 작업별 서브에이전트 지시서를 둡니다. 예를 들어 `orchestrator.md`, `intake-sync.md`, `design.md`, `remotion.md`, `hyperframes.md`, `qa.md`, `render-packaging.md`처럼 역할별 입력, 출력, 쓰기 범위를 정리합니다.
 - `assets/`: 작업별 이미지, 폰트, 참고 자료 같은 보조 자산을 둡니다.
 - `transcript/`: 로컬 전사 결과와 타임라인 기준 파일을 둡니다.
@@ -106,6 +106,7 @@ AI Video Studio/
 ```text
 YYYYMMDD_작업제목/
   voiceover.wav
+  script/
   agent-briefs/
   remotion-project/
   source-hyperframes/
@@ -130,8 +131,8 @@ YYYYMMDD_작업제목/
 - 만들 영상의 주제
 - 사용할 도구: Remotion 또는 HyperFrames
 - 화면비: 예를 들어 16:9, 9:16
-- 대본 또는 원고
-- 음성 파일 위치
+- 첨부한 음성 파일
+- 첨부한 스크립트 파일
 - 원하는 분위기나 참고 스타일
 - 최종 파일명
 
@@ -139,12 +140,14 @@ Codex는 이 정보를 바탕으로 다음 일을 처리합니다.
 
 1. 날짜형 작업 폴더 생성
 2. 루트 `DESIGN.md` 확인
-3. 음성 파일 길이 확인
-4. 필요하면 로컬 전사 실행
-5. 장면별 타임라인 작성
-6. Remotion 또는 HyperFrames 코드 작성
-7. 대표 프레임 렌더링 및 레이아웃 검수
-8. 최종 MP4 렌더링
+3. 첨부한 음성 파일과 스크립트 파일 확인
+4. 스크립트 파일을 `script/narration-script.txt`로 변환
+5. 음성 파일 길이 확인
+6. 필요하면 로컬 전사 실행
+7. 장면별 타임라인 작성
+8. Remotion 또는 HyperFrames 코드 작성
+9. 대표 프레임 렌더링 및 레이아웃 검수
+10. 최종 MP4 렌더링
 
 ## 서브에이전트 병렬 작업
 
@@ -191,13 +194,27 @@ HyperFrames 요청
 
 스크립트 기반 모션그래픽은 음성과 화면 싱크가 중요합니다.
 
-그래서 이 작업실에서는 사용자가 음성 파일을 제공하지 않은 경우, Codex가 최종 영상을 바로 만들지 않고 먼저 음성 파일을 요청합니다.
+그래서 이 작업실에서는 사용자가 음성 파일이나 스크립트 파일을 제공하지 않은 경우, Codex가 최종 영상을 바로 만들지 않고 먼저 필요한 파일을 요청합니다. 초기 영상 생성 프롬프트에는 음성 파일과 스크립트 파일을 둘 다 첨부하는 것을 기본으로 합니다.
 
 기본 음성 파일명은 다음과 같습니다.
 
 ```text
 YYYYMMDD_작업제목/voiceover.wav
 ```
+
+## 스크립트 파일 준비 방법
+
+영상 제작 요청을 시작할 때는 최종 내레이션 기준 스크립트 파일을 첨부합니다. Codex는 새 작업 폴더를 만든 뒤 첨부 스크립트를 `script/` 안으로 옮기고, 음성 녹음과 싱크 기준으로 쓰기 좋은 정리본을 `script/narration-script.txt`로 만듭니다.
+
+정리본 변환 규칙:
+
+- 마크다운 기호, 코드펜스, 촬영 메모를 제거합니다.
+- 모든 줄 뒤에 빈 줄 하나를 넣습니다.
+- 영어 표현은 한국어 발음으로 바꿉니다. 예: `CLAUDE.md`는 `클로드 닷 엠디`, `ChatGPT`는 `챗지피티`.
+- 숫자는 한국어로 바꿉니다. 예: `1,000`은 `천`, `1단계`는 `일 단계`.
+- 대시 `-`, `—`는 삭제하고, 화살표 `→`는 쉼표로 바꿉니다.
+- 코드 블록 내용과 `[화면 예시]` 같은 화면 전용 요소는 제거하고 주변 서술 문장만 유지합니다.
+- 한 줄이 한 호흡이 되도록 약 20자를 넘는 줄은 의미 단위나 쉼표 위치에서 나누고, 핵심 키워드와 라벨은 단독 줄로 둡니다.
 
 ## 음성 파일 준비 방법
 
@@ -287,10 +304,8 @@ HyperFrames:
 AGENTS.md와 DESIGN.md 기준으로 진행해줘.
 새 작업명은 직장인AI_요약영상이야.
 Remotion으로 16:9 모션그래픽 영상을 만들어줘.
-voiceover.wav는 작업 폴더에 넣어둘게.
-
-대본:
-...
+첨부한 음성 파일과 스크립트 파일을 사용해줘.
+스크립트 파일은 narration-script.txt로 변환해서 작업 폴더에 정리해줘.
 
 전사 타임코드 기준으로 장면을 나누고,
 텍스트와 인포그래픽이 겹치지 않게 검수한 뒤
@@ -303,7 +318,7 @@ outputs/final.mp4로 렌더해줘.
 AGENTS.md와 DESIGN.md 기준으로 진행해줘.
 새 작업명은 제품소개_쇼츠야.
 HyperFrames로 9:16 세로 영상을 만들어줘.
-음성 파일과 대본 기준으로 장면 싱크를 맞춰줘.
+첨부한 음성 파일과 스크립트 파일 기준으로 장면 싱크를 맞춰줘.
 
 최종 결과는 outputs/final.mp4로 만들어줘.
 ```
@@ -375,6 +390,7 @@ npm.cmd install --no-save @ffmpeg-installer/ffmpeg
 - `outputs/`
 - `review-frames/`
 - `voiceover.*`
+- `script/`
 - `transcript/`
 - `.env`
 - 로그와 캐시 파일

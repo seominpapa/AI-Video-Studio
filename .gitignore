@@ -27,6 +27,7 @@ pnpm-debug.log*
 
 # Local voiceover/source media copies
 **/voiceover.*
+**/script/
 
 # Generated transcription outputs
 **/transcript/
