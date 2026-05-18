@@ -7,6 +7,11 @@ Codex Desktop App에서 영상 제작을 하기 위한 작업실입니다.
 ## 빠른 시작
 
 1. 이 저장소를 클론합니다.
+
+   ```powershell
+   git clone https://github.com/seominpapa/AI-Video-Studio.git
+   ```
+
 2. Codex Desktop App에서 이 폴더를 엽니다.
 3. Codex Desktop에 Remotion 플러그인과 HyperFrames by HeyGen 플러그인을 추가합니다.
 4. 새 영상 작업을 자연어로 요청합니다.
