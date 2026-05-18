@@ -116,6 +116,7 @@ YYYYMMDD_작업제목/
   remotion-project/
   source-hyperframes/
   assets/
+  transcript/
   review-frames/
   outputs/
 ```

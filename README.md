@@ -278,7 +278,7 @@ review-frames를 다시 뽑아서 겹침 여부를 확인해줘.
 저장소 클론:
 
 ```powershell
-git clone <repository-url>
+git clone https://github.com/seominpapa/AI-Video-Studio.git "AI Video Studio"
 Set-Location ".\AI Video Studio"
 ```
 
