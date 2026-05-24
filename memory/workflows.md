@@ -2,7 +2,7 @@
 
 ## 2026-05-17 - Audio-to-scene sync calibration
 
-1. Treat the task-root `voiceover.wav` as the timing source of truth.
+1. Treat the task `audio/` reference voice file as the timing source of truth.
 2. Run loudness/silence analysis first, but do not use silence alone as proof of semantic sync.
 3. For exact sentence or scene sync, create or request a timecoded transcript/forced-alignment output.
 4. Generate Remotion scene starts and text overlay starts from that timestamp table, then set visual animations to begin at or slightly before the corresponding spoken phrase.
@@ -20,7 +20,7 @@
 1. 루트 `DESIGN.md`와 `AGENTS.md`를 확인합니다.
 2. 초기 영상 생성 요청에는 음성 파일과 스크립트 파일을 함께 첨부하도록 안내합니다. 둘 중 하나라도 없으면 제작 전에 사용자에게 추가 요청합니다.
 3. `YYYYMMDD_작업제목` 폴더를 만들고 하위 폴더를 구성합니다. 스크립트 파일용 `script/`와 서브에이전트 지시가 필요할 때의 `agent-briefs/`도 함께 만듭니다.
-4. 음성 원본 파일을 작업 폴더 루트의 `voiceover.wav`로 둡니다.
+4. 음성 원본 파일과 필요 시 변환한 기준 음성 파일을 작업 폴더의 `audio/` 안에 둡니다. 사용자가 첨부 파일명을 미리 맞출 필요는 없습니다.
 5. 첨부 스크립트 파일을 `script/` 안으로 옮기고, `script/narration-script.txt` 정리본을 만듭니다.
 6. 정리본은 마크다운, 코드 블록, 촬영 메모, `[화면 예시]` 같은 화면 전용 요소를 제거하고, 영어와 숫자는 한국어 발음/표기로 바꾸며, 대시는 삭제하고 화살표는 쉼표로 바꿉니다.
 7. 정리본은 한 줄이 한 호흡이 되도록 약 20자 초과 줄을 의미 단위와 쉼표 위치에서 나누고, 모든 줄 뒤에 빈 줄을 둡니다.
@@ -51,14 +51,14 @@
 6. 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
 7. QA Agent는 샘플 프레임 목록, 텍스트 겹침, 장면 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부를 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
 8. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
-9. 모든 구현 Agent는 `voiceover.wav`, `transcript/sentences.json`, 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+9. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
 10. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
 
 ## Git ignore policy
 
 1. GitHub에는 작업 소스, 공통 문서, 도구 스크립트, 재현에 필요한 설정 파일을 올립니다.
 2. 날짜형 작업 폴더(`YYYYMMDD_작업제목/`)는 개별 로컬 작업공간으로 보고 기본적으로 Git 추적 대상에서 제외합니다.
-3. `outputs/`, `review-frames/`, `voiceover.*`, `script/`, `transcript/`, `node_modules/`, `.venv/`, 캐시와 로그도 Git 추적 대상에서 제외합니다.
+3. `outputs/`, `review-frames/`, 작업 중 복사하거나 변환한 음성 파일, `script/`, `transcript/`, `node_modules/`, `.venv/`, 캐시와 로그도 Git 추적 대상에서 제외합니다.
 4. 이미 추적 중인 작업 폴더나 산출물은 `.gitignore`만으로 빠지지 않으므로 필요하면 `git rm --cached`로 인덱스에서만 제거합니다.
 
 ## README audience
