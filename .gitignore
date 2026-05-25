@@ -29,5 +29,6 @@ pnpm-debug.log*
 **/voiceover.*
 **/script/
 
-# Generated transcription outputs
+# Generated transcription and timeline outputs
 **/transcript/
+**/timeline/

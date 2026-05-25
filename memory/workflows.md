@@ -6,12 +6,16 @@
 2. Run loudness/silence analysis first, but do not use silence alone as proof of semantic sync.
 3. For exact sentence or scene sync, create or request a timecoded transcript/forced-alignment output.
 4. Generate Remotion scene starts and text overlay starts from that timestamp table, then set visual animations to begin at or slightly before the corresponding spoken phrase.
-5. Verify by rendering a debug pass with frame/time/scene markers plus boundary stills before rendering the final MP4.
-6. Prefer root `tools/transcription/transcribe.py` for local transcription. Use `<task>/transcript/sentences.json` as the source of truth for video timing.
-7. If local transcription dependencies are missing, install `tools/transcription/requirements.txt` inside root `tools/transcription/.venv` or request user-provided SRT/VTT/timeline JSON. External STT requires explicit approval.
-8. Treat `--allow-estimated` output as draft-only unless the user explicitly accepts estimated timing.
-9. Cover silent gaps between timestamped sentences with the previous visual scene, never with the final scene fallback.
-10. Keep timecode/progress/frame debug overlays out of final MP4 renders; use them only for review frames or debug compositions.
+5. Save the approved scene timeline to `<task>/timeline/scenes.json` and treat it as the shared scene source for implementation and QA.
+6. Verify by rendering a debug pass with frame/time/scene markers plus boundary stills before rendering the final MP4.
+7. For every scene boundary, inspect frames at 0.2 seconds before, the boundary frame, and 0.2 seconds after.
+8. After the final MP4 render, compare video duration with the reference audio duration and inspect audio stream `start_time`; unexpected drift over 0.2 seconds requires sync review.
+9. Confirm final MP4 sample frames do not include debug timecode, frame number, scene id, or progress overlays.
+10. Prefer root `tools/transcription/transcribe.py` for local transcription. Use `<task>/transcript/sentences.json` as the source of truth for video timing.
+11. If local transcription dependencies are missing, install `tools/transcription/requirements.txt` inside root `tools/transcription/.venv` or request user-provided SRT/VTT/timeline JSON. External STT requires explicit approval.
+12. Treat `--allow-estimated` output as draft-only unless the user explicitly accepts estimated timing.
+13. Cover silent gaps between timestamped sentences with the previous visual scene, never with the final scene fallback.
+14. Keep timecode/progress/frame debug overlays out of final MP4 renders; use them only for review frames or debug compositions.
 
 반복해서 사용할 작업 절차를 기록합니다.
 
@@ -29,12 +33,14 @@
 10. 정리본은 한 줄이 한 호흡이 되도록 약 20자 초과 줄을 의미 단위와 쉼표 위치에서 나누고, 모든 줄 뒤에 빈 줄을 둡니다.
 11. 음성 길이를 확인합니다.
 12. 스크립트를 장면 단위 타임라인으로 나눕니다.
-13. 장면마다 핵심 메시지, 인포그래픽 구조, 텍스트 라벨을 정합니다.
-14. Remotion 또는 HyperFrames로 구현합니다.
-15. 대표 프레임을 `review-frames/`에 렌더링해 텍스트 겹침과 타이밍을 확인합니다.
-16. 싱크 불일치가 있으면 전체 타임라인을 1초 단위와 장면 전환 전후 프레임으로 샘플링하고 컨택트 시트를 만들어 확인합니다.
-17. 최종 MP4를 `outputs/`에 렌더링합니다.
-18. 비디오와 오디오 트랙 포함 여부를 확인합니다.
+13. 장면마다 핵심 메시지, 인포그래픽 구조, 텍스트 라벨을 정하고 승인된 장면 타임라인을 `timeline/scenes.json`에 저장합니다.
+14. Remotion 또는 HyperFrames로 구현할 때 `timeline/scenes.json`과 같은 장면 수, 순서, 시작/종료 시간을 유지합니다.
+15. 대표 프레임을 `review-frames/`에 렌더링해 텍스트 겹침, 텍스트 잘림, 안전 여백, 명암 대비, 타이밍을 확인합니다.
+16. 장면 경계마다 시작 0.2초 전, 시작 프레임, 시작 0.2초 후를 확인해 전환 지연이나 빈 화면이 없는지 검수합니다.
+17. 싱크 불일치가 있으면 전체 타임라인을 1초 단위와 장면 전환 전후 프레임으로 샘플링하고 컨택트 시트를 만들어 확인합니다.
+18. 최종 MP4를 `outputs/`에 렌더링합니다.
+19. FFmpeg 또는 ffprobe로 비디오 길이, 기준 음성 길이, 오디오 트랙 시작 오프셋, 비디오/오디오 트랙 포함 여부를 확인합니다.
+20. 최종 MP4 샘플 프레임에 검수용 디버그 UI가 남아 있지 않은지 확인합니다.
 
 ## Codex Desktop video plugins
 
@@ -52,16 +58,16 @@
 4. 사용자가 Remotion을 요구하면 Remotion Agent만 `remotion-project/`를 담당합니다.
 5. 사용자가 HyperFrames를 요구하면 HyperFrames Agent만 `source-hyperframes/`를 담당합니다.
 6. 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
-7. QA Agent는 샘플 프레임 목록, 텍스트 겹침, 장면 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부를 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
+7. QA Agent는 샘플 프레임 목록, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 경계 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부와 오디오 시작 오프셋을 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
 8. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
-9. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+9. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
 10. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
 
 ## Git ignore policy
 
 1. GitHub에는 작업 소스, 공통 문서, 도구 스크립트, 재현에 필요한 설정 파일을 올립니다.
 2. 날짜형 작업 폴더(`YYYYMMDD_작업제목/`)는 개별 로컬 작업공간으로 보고 기본적으로 Git 추적 대상에서 제외합니다.
-3. `outputs/`, `review-frames/`, 작업 중 복사하거나 변환한 음성 파일, `script/`, `transcript/`, `node_modules/`, `.venv/`, 캐시와 로그도 Git 추적 대상에서 제외합니다.
+3. `outputs/`, `review-frames/`, 작업 중 복사하거나 변환한 음성 파일, `script/`, `transcript/`, `timeline/`, `node_modules/`, `.venv/`, 캐시와 로그도 Git 추적 대상에서 제외합니다.
 4. 이미 추적 중인 작업 폴더나 산출물은 `.gitignore`만으로 빠지지 않으므로 필요하면 `git rm --cached`로 인덱스에서만 제거합니다.
 
 ## README audience
