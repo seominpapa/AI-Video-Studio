@@ -129,6 +129,8 @@ YYYYMMDD_작업제목/
 3. Codex Desktop에 Remotion 플러그인과 HyperFrames by HeyGen 플러그인을 추가합니다.
 4. 새 영상 작업을 자연어로 요청합니다.
 
+새 영상 제작을 요청하면 Codex는 디자인 기준 확인 단계에서 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md)의 `DESIGN.md` 종류를 리스트업하고 선택할 수 있게 안내합니다. 원하는 스타일이 있으면 선택하고, 선택하지 않으면 루트 `DESIGN.md` 기준으로 그대로 진행합니다.
+
 예시 1: 음성 파일과 원본 스크립트로 바로 영상 만들기
 
 ```text
@@ -171,14 +173,15 @@ Codex는 이 정보를 바탕으로 다음 일을 처리합니다.
 
 1. 날짜형 작업 폴더 생성
 2. 루트 `DESIGN.md` 확인
-3. 첨부한 음성 파일과 원본 스크립트 파일 확인
-4. 원본 스크립트 파일에 정리 규칙을 적용해 `script/narration-script.txt`로 변환
-5. 음성 파일 길이 확인
-6. 필요하면 로컬 전사 실행
-7. 장면별 타임라인 작성
-8. Remotion 또는 HyperFrames 코드 작성
-9. 대표 프레임 렌더링 및 레이아웃 검수
-10. 최종 MP4 렌더링
+3. `awesome-design-md`의 `DESIGN.md` 선택지 안내, 또는 루트 `DESIGN.md` 기본값 확정
+4. 첨부한 음성 파일과 원본 스크립트 파일 확인
+5. 원본 스크립트 파일에 정리 규칙을 적용해 `script/narration-script.txt`로 변환
+6. 음성 파일 길이 확인
+7. 필요하면 로컬 전사 실행
+8. 장면별 타임라인 작성
+9. Remotion 또는 HyperFrames 코드 작성
+10. 대표 프레임 렌더링 및 레이아웃 검수
+11. 최종 MP4 렌더링
 
 ## 서브에이전트 병렬 작업
 
