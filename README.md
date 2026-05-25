@@ -284,6 +284,38 @@ Codex에게는 이렇게 요청하면 됩니다.
 
 Voicebox 샘플 업로드는 WAV, MP3, FLAC, WebM 형식을 안내하고 있습니다. 이 저장소에서 사용할 최종 내레이션은 가능하면 WAV로 저장하되, 저장 파일명은 자유롭게 두어도 됩니다. 사용자 음성 샘플을 기반으로 음성 파일을 자동 생성할 수는 있지만, 직접 녹음한 원본 음성보다 발음, 감정, 호흡, 억양 품질이 떨어질 수 있습니다. 중요한 영상은 생성 음성을 한 번 들어보고 필요하면 재생성하거나 직접 녹음본으로 교체합니다.
 
+#### Voicebox 모델 선택 요약
+
+아래 VRAM은 Voicebox 공식 모델 관리 문서의 대략적인 기준이며, 권장 GPU와 CPU/RAM은 Windows에서 다른 앱과 화면 출력까지 함께 쓰는 상황을 감안한 실사용 권장값입니다. GPU가 감지되고 백엔드가 정상 설치되어 있으면 Voicebox는 가능한 가장 빠른 가속 백엔드를 우선 사용합니다. CPU만 사용할 수도 있지만 생성 속도는 GPU보다 크게 느릴 수 있습니다.
+
+| 모델 | 주 용도 | 공식 VRAM 기준 | 권장 GPU | CPU 처리 시 권장 사양 |
+|---|---|---:|---:|---|
+| Qwen3-TTS 1.7B | 고품질 다국어 목소리 클론, 한국어 포함 일반 내레이션 | 약 6GB | VRAM 8GB 이상 | 8~12코어, RAM 32GB 이상 |
+| Qwen3-TTS 0.6B | 더 가벼운 목소리 클론, 빠른 초안 생성 | 약 2GB | VRAM 4GB 이상 | 6~8코어, RAM 16GB 이상 |
+| Qwen CustomVoice 1.7B | 녹음 샘플 없이 큐레이션된 프리셋 음성 사용, 톤/감정 지시 | 약 6GB | VRAM 8GB 이상 | 8~12코어, RAM 32GB 이상 |
+| Qwen CustomVoice 0.6B | 저사양용 프리셋 음성, 빠른 생성 | 약 2GB | VRAM 4GB 이상 | 6~8코어, RAM 16GB 이상 |
+| LuxTTS | 영어 중심, CPU 또는 저사양 GPU에서 가벼운 생성 | 약 1GB | VRAM 2~4GB 이상 | 4~6코어, RAM 8~16GB |
+| Chatterbox | 다양한 언어 커버리지, 다국어 목소리 클론 | 약 3GB | VRAM 6GB 이상 | 8~12코어, RAM 32GB 이상 |
+| Chatterbox Turbo | 영어 중심, 빠른 생성, 감정 태그 활용 | 약 1.5GB | VRAM 4GB 이상 | 6~8코어, RAM 16GB 이상 |
+| TADA 1B | 영어 중심 장문 음성 생성 | 약 4GB | VRAM 6~8GB 이상 | 8~12코어, RAM 32GB 이상 |
+| TADA 3B Multilingual | 다국어 장문 음성 생성, 긴 내레이션 | 약 8GB | VRAM 12GB 이상 | 12코어 이상, RAM 64GB 권장 |
+| Kokoro 82M | 프리셋 음성, 가장 가벼운 CPU 친화 모델 | 약 150MB | GPU 불필요 | 4코어, RAM 8GB 이상 |
+
+목소리 클론이 목적이면 Qwen3-TTS, Chatterbox, Chatterbox Turbo, LuxTTS, TADA 계열을 먼저 봅니다. Qwen CustomVoice와 Kokoro는 사용자가 제공한 특정 목소리를 복제하기보다, 미리 준비된 프리셋 음성을 선택해 쓰는 방식에 가깝습니다.
+
+#### Voicebox GPU와 CUDA 설정 요약
+
+- Voicebox는 첫 실행 시 사용 가능한 가속기를 자동 감지하고, 가능한 가장 빠른 백엔드를 선택합니다.
+- Windows에서 NVIDIA GPU를 사용한다면 `Settings → GPU`에서 CUDA backend 설치 또는 상태를 확인합니다. NVIDIA GPU가 감지되면 CUDA backend 설치 버튼이 표시될 수 있습니다.
+- CUDA backend는 Voicebox가 별도 서버 코어와 CUDA 라이브러리를 내려받아 연결하는 방식입니다. 일반적으로 사용자가 별도 CUDA Toolkit을 직접 설치하는 것보다 Voicebox의 GPU 설정 화면에서 설치/재설치를 진행하는 편이 안전합니다.
+- 설치 후 Voicebox를 재시작하고 `Settings → GPU`에서 backend가 CPU가 아니라 CUDA, XPU, DirectML, MLX 같은 GPU backend로 표시되는지 확인합니다.
+- 서버 로그에서도 `Backend`와 `GPU` 항목을 확인할 수 있습니다.
+- 생성이 느리거나 GPU가 사용되지 않으면 `Settings → GPU`가 CPU로 잡혀 있는지, CUDA backend가 설치되어 있는지, GPU 드라이버가 최신인지 확인합니다.
+- CUDA out of memory가 발생하면 더 작은 모델로 바꾸고, 사용하지 않는 모델을 언로드하고, 브라우저/게임/영상 편집기처럼 VRAM을 많이 쓰는 앱을 닫은 뒤 다시 시도합니다.
+- GPU VRAM이 부족하면 CPU 모드로도 처리할 수 있지만, 큰 모델은 매우 느릴 수 있으므로 Kokoro, LuxTTS, Qwen3-TTS 0.6B, Chatterbox Turbo 같은 가벼운 모델을 우선 사용합니다.
+
+참고 문서: [Voicebox Model Management](https://docs.voicebox.sh/developer/model-management), [Voicebox GPU Acceleration](https://docs.voicebox.sh/overview/gpu-acceleration), [Voicebox Voice Cloning](https://docs.voicebox.sh/overview/voice-cloning), [Voicebox Preset Voices](https://docs.voicebox.sh/overview/preset-voices)
+
 기본 흐름:
 
 1. [Voicebox](https://voicebox.sh/)에서 Windows용 앱을 다운로드해 설치합니다.
