@@ -16,6 +16,7 @@
 - 음성 원본 파일은 HyperFrames와 Remotion 공통 소스이므로 각 작업 폴더의 `audio/` 안에서 관리합니다. 사용자가 첨부 파일명을 미리 맞출 필요는 없습니다.
 - 스크립트 기반 영상 작업은 초기 요청에 음성 파일과 스크립트 파일을 함께 첨부하도록 요청하고, 첨부 스크립트는 작업 폴더의 `script/` 안에서 음성용 `narration-script.txt`로 변환해 관리합니다.
 - 큰 영상 작업은 Orchestrator 중심의 서브에이전트 구성으로 나눌 수 있으며, Remotion Agent와 HyperFrames Agent는 사용자 요청 또는 Orchestrator 선택에 따라 조건부로 실행합니다.
+- 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천합니다.
 - 작업별 서브에이전트 지시서는 해당 작업 폴더의 `agent-briefs/`에 둡니다.
 
 ## 반복 작업 규칙

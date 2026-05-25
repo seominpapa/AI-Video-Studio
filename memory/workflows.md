@@ -46,9 +46,11 @@
 
 1. Remotion과 HyperFrames는 Codex Desktop 플러그인/스킬을 작업 보조 도구로 사용합니다.
 2. 실제 렌더는 작업 폴더 안의 코드와 로컬 Node/FFmpeg/전사 의존성으로 수행합니다.
-3. 새 작업 프롬프트에는 영상 목적, 화면비, 길이, 첨부 음성 파일, 첨부 스크립트 파일, 원하는 도구(Remotion 또는 HyperFrames), 디자인 기준(기본은 루트 `DESIGN.md`, 선택 사항은 `awesome-design-md`), 출력 파일명을 포함합니다.
-4. Remotion은 React/TypeScript 컴포지션을 작성해 `npx.cmd remotion render`로 MP4를 만듭니다.
-5. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
+3. 새 작업 프롬프트에는 영상 목적, 화면비, 길이, 첨부 음성 파일, 첨부 스크립트 파일, 원하는 도구(Remotion 또는 HyperFrames, 선택 사항), 디자인 기준(기본은 루트 `DESIGN.md`, 선택 사항은 `awesome-design-md`), 출력 파일명을 포함합니다.
+4. 도구가 지정되지 않았으면 스크립트와 영상 목적을 분석해 숫자/통계/차트/반복 템플릿 중심은 Remotion, 브랜드 소개/타이포그래피/웹 기반 감각적 모션 중심은 HyperFrames를 추천합니다.
+5. 두 도구가 모두 적합하거나 기준이 불명확하면 추천 도구, 이유, 대안 도구를 설명하고 사용자 확인을 받습니다.
+6. Remotion은 React/TypeScript 컴포지션을 작성해 `npx.cmd remotion render`로 MP4를 만듭니다.
+7. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
 
 ## Subagent video production
 
@@ -58,10 +60,11 @@
 4. 사용자가 Remotion을 요구하면 Remotion Agent만 `remotion-project/`를 담당합니다.
 5. 사용자가 HyperFrames를 요구하면 HyperFrames Agent만 `source-hyperframes/`를 담당합니다.
 6. 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
-7. QA Agent는 샘플 프레임 목록, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 경계 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부와 오디오 시작 오프셋을 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
-8. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
-9. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
-10. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
+7. 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천합니다.
+8. QA Agent는 샘플 프레임 목록, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 경계 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부와 오디오 시작 오프셋을 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
+9. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
+10. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+11. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
 
 ## Git ignore policy
 

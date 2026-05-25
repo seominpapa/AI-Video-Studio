@@ -111,7 +111,10 @@ Orchestrator
 - 사용자가 "Remotion으로"라고 요청하면 Remotion Agent만 실행하고 HyperFrames Agent는 실행하지 않습니다.
 - 사용자가 "HyperFrames로"라고 요청하면 HyperFrames Agent만 실행하고 Remotion Agent는 실행하지 않습니다.
 - 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
-- 사용자가 도구를 명시하지 않으면 Orchestrator가 작업 성격에 맞는 도구를 선택하거나, 선택 기준이 불명확한 경우 사용자에게 확인합니다.
+- 사용자가 도구를 명시하지 않으면 Orchestrator가 첨부 스크립트, 영상 목적, 화면 스타일, 반복 제작 가능성, 데이터/차트 비중, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천합니다.
+- 숫자, 통계, KPI, 비교표, 랭킹, 단계 설명, 프로세스, 차트, 데이터 기반 반복 템플릿, 여러 편으로 재사용할 구조가 중심이면 Remotion을 우선 추천합니다.
+- 브랜드 소개, 서비스 소개, 짧은 홍보 영상, 큰 타이포그래피, 웹 레이아웃 기반 화면, 장면 전환, 리듬감 있는 감각적 모션이 중심이면 HyperFrames를 우선 추천합니다.
+- 두 도구가 모두 적합하거나 선택 기준이 불명확하면 추천 도구와 이유, 대안 도구를 함께 설명하고 사용자에게 확인합니다.
 
 병렬 작업은 공통 타임라인이 확정된 뒤 구현 단계에서 가장 안전합니다. `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인은 모든 구현 Agent가 공유하는 기준으로 잠그고, Agent끼리는 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
 
