@@ -30,3 +30,19 @@
 - For sync fixes, compare source timeline starts against Remotion `scenes` and text overlays, then render 1-second samples plus scene-boundary frames before final render.
 - Do not declare sync fixed only because scene starts sit near silent intervals. Silence detection finds pause candidates, not semantic sentence boundaries. Use a timecoded transcript or forced alignment for exact narration-to-visual sync.
 - If multiple old timelines remain in one task and narration-to-visual sync is still wrong after correction attempts, stop patching the old implementation. Preserve only the task-root `voiceover.wav`, clear generated tool sources/outputs/review frames, and rebuild from a timecoded transcript.
+
+## 2026-05-26 - Remotion Tailwind config in non-Tailwind projects
+
+- `create-video --no-tailwind` can still leave Tailwind-related dependencies or config in a generated Remotion project. If `remotion still` fails while scanning parent directories, remove unused Tailwind config hooks from `remotion.config.ts` before rendering.
+
+## 2026-05-30 - Korean line breaks and floating callouts
+
+- Do not place floating callout cards over tables, database rows, node maps, or funnel labels. Put callouts in their own reserved side area and verify the full scene, not only the center frame.
+- Korean short endings such as `다면`, `으로`, `접/속` can be split awkwardly by automatic wrapping inside compact cards. Use manual line arrays or separate text rows for card copy, not browser auto-wrap.
+- After a user reports overlap or wrapping issues, extract 1-second samples from the final MP4 for the affected time range and inspect a contact sheet before re-delivering.
+
+## 2026-06-07 - Bottom subtitle safe area
+
+- Do not use the bottom 18-22% of the frame for core infographics, labels, decorative strokes, or progress bars when the video needs subtitles.
+- Keep labels inside the infographic, below the upper explanation, or in a side tray above the subtitle-safe area.
+- Review representative frames with the subtitle-safe area in mind; a visually clean infographic still fails if it leaves no room for the final caption.
