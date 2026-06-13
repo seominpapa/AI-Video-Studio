@@ -46,3 +46,10 @@
 - Do not use the bottom 18-22% of the frame for core infographics, labels, decorative strokes, or progress bars when the video needs subtitles.
 - Keep labels inside the infographic, below the upper explanation, or in a side tray above the subtitle-safe area.
 - Review representative frames with the subtitle-safe area in mind; a visually clean infographic still fails if it leaves no room for the final caption.
+
+## 2026-06-13 - Voice loudness spikes after loudnorm
+
+- Integrated `loudnorm` can still leave short TTS/Voicebox sections noticeably louder than surrounding narration. Do not treat `-16 LUFS` alone as audio QA.
+- After creating `voice_normalized.wav`, scan 1-second RMS/peak windows and compare suspicious timestamps with nearby seconds.
+- If a user reports local volume spikes, preserve `voice_normalized.wav`, create a separate balanced file such as `voice_balanced.wav` with faded gain envelopes, replace the render audio copy, and re-render from source.
+- Record before/after RMS around the reported timestamps in the QA summary.

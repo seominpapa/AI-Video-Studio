@@ -77,12 +77,16 @@ PDF, 문서, 기획안, URL만 제공된 영상 요청과 음성 파일, 원본 
 - 스크립트 정리본은 싱크 최적화를 위해 한 줄이 한 호흡이 되도록 만듭니다. 약 20자를 넘으면 의미 단위로 나누고, 쉼표 위치에서 줄을 나누며, 핵심 키워드와 라벨은 단독 줄로 둡니다.
 - 음성 파일이 있으면 작업 폴더의 `audio/` 안에 첨부 원본과 필요 시 변환한 기준 음성 파일을 정리합니다. 사용자가 파일명을 미리 `voiceover.wav`로 맞출 필요는 없습니다.
 - Voicebox나 TTS로 만든 음성처럼 볼륨이 갑자기 튈 수 있는 파일은 원본을 보존한 뒤 FFmpeg loudness normalization을 적용해 기준 음성 파일을 만듭니다. 유튜브 내레이션 기준은 보통 `-16 LUFS`를 사용하고, 배경음악까지 합친 최종 믹스는 필요 시 `-14 LUFS` 근처를 별도 기준으로 봅니다.
-- 예를 들어 `voice.wav`를 후처리할 때는 작업 폴더의 `audio/` 안에서 아래 명령을 사용해 `voice_normalized.wav`를 만들고, 이후 전사와 싱크 기준은 정규화된 파일을 우선 사용합니다.
+- 예를 들어 `voice.wav`를 후처리할 때는 작업 폴더의 `audio/` 안에서 아래 명령을 사용해 `voice_normalized.wav`를 만들고, 이후 전사와 싱크 기준은 정규화된 파일을 우선 사용합니다. `loudnorm`가 샘플레이트를 과하게 올릴 수 있으므로 `-ar 48000`을 함께 지정합니다.
 
 ```powershell
-ffmpeg -i voice.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 voice_normalized.wav
+ffmpeg -i voice.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 -ar 48000 voice_normalized.wav
 ```
 
+- `loudnorm` 적용만으로 음성 검수가 끝난 것으로 보지 않습니다. 정규화 후에는 1초 단위 RMS/peak를 스캔해 주변 구간보다 갑자기 큰 구간을 찾습니다. 기준은 작업 성격에 따라 조정할 수 있지만, 인접 구간보다 RMS가 약 4-5dB 이상 높거나, 사용자가 특정 타임스탬프의 볼륨 튐을 지적한 구간은 별도 검토 대상으로 봅니다.
+- 구간별 볼륨 튐이 발견되면 최종 MP4의 오디오만 임시로 낮추지 않습니다. `audio/` 안에 원본과 `voice_normalized.wav`를 보존한 뒤, 짧은 fade-in/out이 있는 구간별 gain envelope를 적용해 `voice_balanced.wav` 같은 새 기준 음성을 만듭니다. 이후 Remotion `public/voiceover.wav` 또는 도구별 렌더용 사본을 이 파일로 교체하고 재렌더합니다.
+- 구간별 gain 보정 후에는 보정 전/후 1초 RMS 값을 작업 결과나 QA 요약에 기록합니다. 사용자가 지적한 타임스탬프는 최소한 해당 시점 앞뒤 2-3초를 비교하고, 보정으로 발화가 갑자기 작아지거나 이질적으로 들릴 수 있는 경우에는 gain 값을 완만하게 조정합니다.
+- 전사와 싱크 기준은 길이가 바뀌지 않는 정규화/밸런싱 파일을 사용할 수 있습니다. 단, 노이즈 제거, 무음 삭제, 타임스트레치처럼 길이나 발화 위치를 바꾸는 처리는 기존 `transcript/sentences.json`을 그대로 신뢰하지 말고 전사/타임라인을 다시 확인합니다.
 - 음성 파일이 있으면 먼저 전체 길이를 확인하고, 스크립트를 장면 단위로 나눈 타임라인 표를 만듭니다. 각 장면은 시작 시간, 종료 시간, 핵심 메시지, 인포그래픽 구조, 표시할 텍스트를 가져야 합니다.
 - 장면 타임라인이 확정되면 작업 폴더의 `timeline/scenes.json`에 기준 파일로 저장합니다. Remotion, HyperFrames, QA 검수는 코드 내부 배열을 임의 기준으로 삼지 말고 이 파일 또는 이 파일과 동일한 장면 수, 순서, 시작/종료 시간을 기준으로 맞춥니다.
 - 정확한 문장/장면 싱크가 필요하거나 사용자가 싱크 불일치를 지적한 경우, 무음 구간 분석이나 사람이 나눈 장면표만으로 싱크가 맞는 것으로 확정하지 않습니다. 전사 타임코드 또는 강제 정렬 결과를 만들거나 사용자에게 요청해 실제 발화 기준 타임라인을 먼저 확보합니다.
@@ -266,11 +270,13 @@ HyperFrames 렌더에서 오디오가 누락되면 FFmpeg로 원본 음성과 �
 
 영상/음성 합치기, 오디오 확인, 썸네일 추출, 컨테이너 검사에는 FFmpeg를 사용합니다. 시스템에 FFmpeg가 없다면 작업 폴더 안에서 로컬 바이너리를 설치합니다. 사용자 홈이나 다른 프로젝트에 설치된 FFmpeg 경로를 문서에 고정하지 않습니다.
 
-Voicebox 등으로 만든 내레이션 음성의 볼륨이 구간별로 튀면 작업 폴더의 `audio/` 안에서 원본을 보존하고 loudness normalization을 적용합니다. 내레이션 기준은 `I=-16`, `TP=-1.5`, `LRA=11`을 기본값으로 사용합니다.
+Voicebox 등으로 만든 내레이션 음성의 볼륨이 구간별로 튀면 작업 폴더의 `audio/` 안에서 원본을 보존하고 loudness normalization을 적용합니다. 내레이션 기준은 `I=-16`, `TP=-1.5`, `LRA=11`을 기본값으로 사용하고, 샘플레이트는 `-ar 48000`으로 고정합니다.
 
 ```powershell
-ffmpeg -i voice.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 voice_normalized.wav
+ffmpeg -i voice.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 -ar 48000 voice_normalized.wav
 ```
+
+정규화 후에도 1초 단위 RMS/peak를 확인합니다. 특정 구간이 주변보다 튀면 `voice_normalized.wav`를 덮어쓰지 말고 `voice_balanced.wav`처럼 새 파일을 만들고, 부드러운 fade가 있는 구간별 gain envelope로 보정합니다. 최종 렌더 후에는 FFprobe로 오디오 트랙을 확인하는 것과 별개로, 사용자가 지적한 타임스탬프의 전/후 RMS를 다시 비교해 QA 요약에 남깁니다.
 
 ```powershell
 npm.cmd install --no-save @ffmpeg-installer/ffmpeg
