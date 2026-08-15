@@ -2,9 +2,9 @@
 
 Codex Desktop App에서 영상 제작을 하기 위한 작업실입니다.
 
-## Remotion과 HyperFrames
+## Remotion, HyperFrames, White Animation
 
-이 저장소에서는 Remotion과 HyperFrames 두 가지 방식으로 영상을 만들 수 있습니다. 둘 다 최종 결과는 작업 폴더의 `outputs/`에 MP4로 렌더링하지만, 작업 방식과 강점이 다릅니다.
+이 저장소에서는 Remotion, HyperFrames, White Animation 세 가지 방식으로 영상을 만들 수 있습니다. 모두 최종 결과는 작업 폴더의 `outputs/`에 MP4로 렌더링하지만, 작업 방식과 강점이 다릅니다.
 
 ### 작업 방식의 차이
 
@@ -22,20 +22,30 @@ HyperFrames:
 - 웹 기반 모션그래픽, 타이포그래피 애니메이션, 장면 전환, 오디오 반응형 효과, 짧은 홍보 영상에 적합합니다.
 - 정적인 최종 레이아웃을 먼저 잡고 그 위치로 요소가 들어오게 만드는 방식이라, 화면 디자인과 모션을 빠르게 조율하기 좋습니다.
 
+White Animation:
+
+- [geeklee/srt-whiteboard-animation](https://github.com/geeklee/srt-whiteboard-animation)을 작업별로 사용해 SRT 자막을 연속 필기 방식의 화이트보드 손그림 영상으로 만듭니다.
+- 따뜻한 미색 종이 바탕과 절제된 스케치 선, 순차적으로 나타나는 `ink → color` 필기 효과가 특징입니다.
+- 렌더에 쓰는 펜은 유지하되 펜대의 중국어 문구는 제거한 작업별 사본을 사용합니다.
+- 설명형 강의, 이야기, 개념을 한 장면씩 손그림으로 풀어내는 영상에 적합합니다. 실제 음성 타임코드가 담긴 SRT가 필수이므로, **원본 스크립트와 `.wav` 음성 파일이 모두 첨부된 경우에만** 도구 선택지로 제시합니다.
+- 화이트보드 레포의 자체 스타일 가이드를 시각 기준으로 적용하므로 별도 외부 `DESIGN.md`를 고를 필요가 없습니다. 루트 `DESIGN.md`는 여백·가독성·싱크·검수 안전 규칙에만 사용합니다.
+
 ### 도구 추천 기준
 
-사용자가 Remotion 또는 HyperFrames를 직접 지정하지 않아도 됩니다. Codex는 첨부한 스크립트, PDF/문서/URL, 영상 목적을 보고 더 적합한 도구를 추천할 수 있습니다.
+사용자가 Remotion, HyperFrames 또는 White Animation을 직접 지정하지 않아도 됩니다. Codex는 첨부한 스크립트, PDF/문서/URL, 영상 목적을 보고 더 적합한 도구를 추천할 수 있습니다.
 
 - 숫자, 통계, KPI, 비교표, 랭킹, 단계 설명, 프로세스, 차트, 데이터 기반 반복 템플릿이 중심이면 Remotion을 추천합니다.
 - 브랜드 소개, 서비스 소개, 짧은 홍보 영상, 큰 타이포그래피, 웹 레이아웃 기반 화면, 장면 전환, 리듬감 있는 감각적 모션이 중심이면 HyperFrames를 추천합니다.
+- 스크립트의 흐름을 따라 한 장면씩 그려지는 손그림 설명 영상, 이야기형 강의, 개념 시각화가 중심이고 원본 스크립트와 `.wav`가 함께 있으면 White Animation을 추천합니다.
 - 둘 다 가능하면 추천 도구와 이유, 대안 도구의 장단점을 함께 설명한 뒤 사용자의 선택을 확인합니다.
 - 사용자가 특정 도구를 명시하면 그 요청을 우선합니다.
 
-### Remotion과 HyperFrames 스킬의 역할
+### 제작 도구의 역할
 
-두 스킬은 사용자가 첨부한 자료를 바탕으로 모션그래픽 제작 과정을 도와줍니다.
+세 제작 방식은 사용자가 첨부한 자료를 바탕으로 영상 제작 과정을 도와줍니다.
 
-- 음성 파일과 원본 스크립트 파일을 첨부하면, Codex가 스크립트 정리본을 만들고 음성 길이와 대본을 확인한 뒤 장면 타임라인을 나눠 Remotion 또는 HyperFrames 코드로 모션그래픽을 구현할 수 있습니다.
+- 음성 파일과 원본 스크립트 파일을 첨부하면, Codex가 스크립트 정리본을 만들고 음성 길이와 대본을 확인한 뒤 장면 타임라인을 나눠 Remotion, HyperFrames 또는 White Animation으로 영상을 구현할 수 있습니다.
+- White Animation은 로컬 전사로 만든 `transcript/subtitles.srt`를 입력으로 사용합니다. 전사 타임코드가 실제 발화와 맞는지 확인한 뒤, 장면 전략 → 선화 → 영역/순서 표기 → 미리보기 → 렌더 순서로 진행합니다.
 - 스크립트만 있는 경우에는 먼저 내레이션용 정리본을 만들고, 필요하면 TTS 또는 별도 음성 생성 도구를 통해 음성 파일을 준비할 수 있습니다.
 - 사용자 음성 샘플이 있으면 음성 생성 워크플로를 도와줄 수 있지만, 생성 음성은 직접 녹음한 음성보다 품질이 낮을 수 있으므로 최종 확인이 필요합니다.
 - PDF, 문서, 강의안, 보고서 같은 첨부자료가 있으면 핵심 내용을 추출해 대본 초안, 장면 구성, 화면별 메시지, 인포그래픽 방향을 만들 수 있습니다.
@@ -62,7 +72,7 @@ PDF, 문서, 기획안, URL과 음성 파일, 원본 스크립트가 함께 제�
 - PDF, 문서, 기획안, URL은 브랜드 톤앤매너, 색상, 용어, 수치, 표, 차트, 다이어그램, 화면 라벨, 인포그래픽 구조를 보강하는 자료로 사용합니다.
 - 첨부자료 내용이 원본 스크립트와 충돌하면 Codex가 내레이션을 임의로 바꾸지 않고 사용자에게 확인합니다.
 
-두 도구 모두 Codex Desktop 플러그인을 추가해서 사용합니다. 플러그인은 작업을 돕는 도구이고, 실제 소스와 결과물은 작업 폴더 안에 생성됩니다.
+Remotion과 HyperFrames는 Codex Desktop 플러그인을 작업 보조 도구로 사용합니다. White Animation은 작업별 오픈소스 렌더러를 사용합니다. 실제 소스와 결과물은 모두 작업 폴더 안에 생성됩니다.
 
 
 대부분의 작업은 터미널 명령어를 직접 입력하지 않고, Codex에게 자연어로 요청하면 됩니다. 이 저장소는 Codex가 일관되게 작업할 수 있도록 공통 규칙, 디자인 기준, 로컬 전사 도구를 모아둔 루트 폴더입니다.
@@ -99,6 +109,7 @@ AI Video Studio/
     timeline/
     remotion-project/
     source-hyperframes/
+    source-whiteboard/
     review-frames/
     outputs/
 ```
@@ -107,7 +118,7 @@ AI Video Studio/
 
 - `README.md`: 사람이 처음 읽는 온보딩 문서입니다.
 - `AGENTS.md`: Codex가 영상 작업 중 반드시 따라야 하는 운영 규칙입니다.
-- `DESIGN.md`: 모든 Remotion, HyperFrames 영상 작업에 적용하는 공통 디자인 기준입니다.
+- `DESIGN.md`: 모든 Remotion, HyperFrames, White Animation 영상 작업에 적용하는 공통 디자인 기준입니다.
 - `LICENSE`: 프로젝트의 MIT 라이선스입니다.
 - `.gitignore`: 날짜형 작업 폴더, 렌더 결과, 음성 원본, 검수 프레임, 로컬 의존성을 Git 추적에서 제외합니다.
 - `memory/`: 장기 운영 결정, 반복 실수 방지 메모, 안정화된 워크플로를 짧게 기록합니다.
@@ -115,12 +126,13 @@ AI Video Studio/
 - `YYYYMMDD_작업제목/`: 개별 영상 작업 공간입니다. 새 영상 작업마다 새로 만들며 기본적으로 GitHub에 올리지 않습니다.
 - `audio/`: 사용자가 첨부한 음성 원본과 Codex가 작업 중 정리한 기준 음성 파일을 둡니다. 사용자가 파일명을 미리 맞출 필요는 없습니다.
 - `script/`: 첨부한 스크립트 원본과 음성용으로 변환한 `narration-script.txt`를 둡니다.
-- `agent-briefs/`: 작업별 서브에이전트 지시서를 둡니다. 예를 들어 `orchestrator.md`, `intake-sync.md`, `design.md`, `remotion.md`, `hyperframes.md`, `qa.md`, `render-packaging.md`처럼 역할별 입력, 출력, 쓰기 범위를 정리합니다.
+- `agent-briefs/`: 작업별 서브에이전트 지시서를 둡니다. 예를 들어 `orchestrator.md`, `intake-sync.md`, `design.md`, `remotion.md`, `hyperframes.md`, `white-animation.md`, `qa.md`, `render-packaging.md`처럼 역할별 입력, 출력, 쓰기 범위를 정리합니다.
 - `assets/`: 작업별 이미지, 폰트, 참고 자료 같은 보조 자산을 둡니다.
 - `transcript/`: 로컬 전사 결과와 문장별 타임코드 기준 파일을 둡니다.
 - `timeline/`: 장면별 시작/종료 시간, 핵심 메시지, 인포그래픽 구조를 담은 `scenes.json` 기준 파일을 둡니다.
 - `remotion-project/`: Remotion으로 구현할 때 사용하는 프로젝트 소스 폴더입니다.
 - `source-hyperframes/`: HyperFrames로 구현할 때 사용하는 소스 폴더입니다.
+- `source-whiteboard/`: White Animation을 선택했을 때 `srt-whiteboard-animation` 레포를 작업별로 내려받는 폴더입니다. 손그림 원본과 `.annotation.json`은 `assets/whiteboard/`에, 장면별 렌더는 `outputs/whiteboard-scenes/`에 둡니다.
 - `review-frames/`: 장면별 대표 프레임, 컨택트 시트, 검수용 이미지를 둡니다.
 - `outputs/`: 최종 MP4와 렌더 결과물을 둡니다.
 
@@ -133,6 +145,7 @@ YYYYMMDD_작업제목/
   agent-briefs/
   remotion-project/
   source-hyperframes/
+  source-whiteboard/
   assets/
   transcript/
   timeline/
@@ -158,19 +171,19 @@ YYYYMMDD_작업제목/
    ```
 
 2. Codex Desktop App에서 이 폴더를 엽니다.
-3. Codex Desktop에 Remotion 플러그인과 HyperFrames by HeyGen 플러그인을 추가합니다.
+3. Codex Desktop에 Remotion 플러그인과 HyperFrames by HeyGen 플러그인을 추가합니다. White Animation은 선택 시 작업 폴더의 `source-whiteboard/`에 필요한 오픈소스 레포를 준비합니다.
 4. 새 영상 작업을 자연어로 요청합니다.
 
-새 영상 제작을 요청하면 Codex는 디자인 기준 확인 단계에서 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md)의 `DESIGN.md` 종류를 리스트업하고 선택할 수 있게 안내합니다. 원하는 스타일이 있으면 선택하고, 루트 기본값을 승인하면 루트 `DESIGN.md` 기준으로 그대로 진행합니다.
+새 영상 제작을 요청하면 Codex는 디자인 기준 확인 단계에서 [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md)의 `DESIGN.md` 종류를 리스트업하고 선택할 수 있게 안내합니다. 단, White Animation은 레포의 자체 스타일 가이드를 사용하므로 별도 디자인을 묻지 않습니다.
 
-도구와 디자인 기준을 프롬프트에 명시하지 않았다면 Codex는 작업 폴더 생성이나 구현을 시작하기 전에 먼저 Remotion 또는 HyperFrames 추천 이유를 설명하고, `awesome-design-md` 선택지 또는 루트 `DESIGN.md` 기본값 사용 여부를 확인합니다. 사용자가 특정 도구와 디자인 기준을 명확히 승인한 뒤에만 구현을 시작합니다.
+도구와 디자인 기준을 프롬프트에 명시하지 않았다면 Codex는 작업 폴더 생성이나 구현을 시작하기 전에 먼저 Remotion 또는 HyperFrames를 추천합니다. 원본 스크립트와 `.wav` 음성이 모두 첨부된 경우에는 White Animation도 함께 선택지로 제시합니다. White Animation이 선택되면 자체 스타일 가이드로 바로 진행하고, 그 외 도구에서는 `awesome-design-md` 선택지 또는 루트 `DESIGN.md` 기본값 사용 여부를 확인합니다.
 
 예시 1: 음성 파일과 원본 스크립트로 바로 영상 만들기
 
 ```text
 16:9 모션그래픽 영상을 만들어줘.
 첨부한 음성 파일과 원본 스크립트 파일을 사용해줘.
-Remotion 또는 HyperFrames 중 더 적합한 도구를 추천하고,
+Remotion, HyperFrames 또는 White Animation 중 더 적합한 도구를 추천하고,
 진행 전에 확인해줘.
 ```
 
@@ -192,7 +205,7 @@ awesome-design-md 선택지 또는 루트 DESIGN.md 기본값 중 디자인 기�
 보통 사용자는 아래 내용을 Codex에게 말해주면 됩니다.
 
 - 만들 영상의 주제
-- 사용할 도구: Remotion 또는 HyperFrames. 정하지 않았다면 Codex가 추천할 수 있습니다.
+- 사용할 도구: Remotion, HyperFrames 또는 White Animation. 정하지 않았다면 Codex가 추천할 수 있습니다. White Animation은 원본 스크립트와 `.wav`가 모두 있을 때 선택할 수 있습니다.
 - 화면비: 예를 들어 16:9, 9:16
 - 첨부한 음성 파일
 - 첨부한 원본 스크립트 파일
@@ -202,8 +215,8 @@ awesome-design-md 선택지 또는 루트 DESIGN.md 기본값 중 디자인 기�
 
 Codex는 이 정보를 바탕으로 다음 일을 처리합니다.
 
-1. 도구가 정해지지 않았으면 Remotion 또는 HyperFrames 추천과 사용자 확인
-2. `awesome-design-md`의 `DESIGN.md` 선택지 안내, 또는 루트 `DESIGN.md` 기본값 확인
+1. 도구가 정해지지 않았으면 Remotion 또는 HyperFrames 추천과 사용자 확인. 원본 스크립트와 `.wav`가 모두 있으면 White Animation도 함께 제시
+2. White Animation이면 레포 자체 스타일 가이드 적용. 그 외 도구면 `awesome-design-md`의 `DESIGN.md` 선택지 안내 또는 루트 `DESIGN.md` 기본값 확인
 3. 날짜형 작업 폴더 생성
 4. 루트 `DESIGN.md` 확인
 5. 첨부한 PDF, 문서, 기획안, URL이 있으면 핵심 메시지, 스타일 단서, 인포그래픽 소재 확인
@@ -213,7 +226,7 @@ Codex는 이 정보를 바탕으로 다음 일을 처리합니다.
 9. 음성 파일 길이 확인
 10. 필요하면 로컬 전사 실행
 11. 장면별 타임라인 작성 및 `timeline/scenes.json` 기준 파일 저장
-12. Remotion 또는 HyperFrames 코드 작성
+12. 선택한 도구의 소스 작성 또는 White Animation의 SRT·선화·영역 표기·렌더 작업
 13. 대표 프레임 렌더링 및 레이아웃/싱크 검수
 14. 최종 MP4 렌더링 후 길이, 오디오 트랙, 디버그 UI 잔존 여부 확인
 
@@ -229,15 +242,17 @@ Orchestrator
   Design Agent
   Remotion Agent        optional
   HyperFrames Agent     optional
+  White Animation Agent optional
   QA Agent
   Render/Packaging Agent
 ```
 
 - Orchestrator: 사용자 요구 해석, 도구 선택, 작업 폴더 생성, 타임라인 승인, 디자인 승인, QA 수정 지시, 최종 렌더 승인
 - Intake/Sync Agent: 음성 길이 확인, 로컬 전사, `transcript/sentences.json`, `timeline/scenes.json` 장면 타임라인 작성
-- Design Agent: `DESIGN.md` 기준 비주얼 시스템, 안전 영역, 인포그래픽 구조, 텍스트 밀도, 장면별 디자인 브리프 작성
+- Design Agent: Remotion/HyperFrames는 `DESIGN.md` 기준 비주얼 시스템을, White Animation은 레포 자체 가이드 기준 손그림 장면 전략을 작성하고 모든 도구에 안전 영역·가독성·싱크 기준을 적용
 - Remotion Agent: Remotion 요청 또는 선택 시 `remotion-project/` 구현
 - HyperFrames Agent: HyperFrames 요청 또는 선택 시 `source-hyperframes/` 구현
+- White Animation Agent: 원본 스크립트와 `.wav`가 모두 제공되고 White Animation이 선택된 경우에만 `source-whiteboard/`와 `assets/whiteboard/`를 담당
 - QA Agent: 샘플 프레임 계획, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 싱크, 디버그 UI 제거, 오디오 트랙과 시작 오프셋 검수
 - Render/Packaging Agent: 최종 MP4 렌더, 오디오 mux/check, 길이 검증, `outputs/` 정리
 
@@ -252,9 +267,12 @@ Remotion 요청
 HyperFrames 요청
 → Orchestrator → Intake/Sync → Design → HyperFrames Agent → QA → Render/Packaging
 
-두 도구 비교 요청
+White Animation 요청
+→ Orchestrator → Intake/Sync → Design → White Animation Agent → QA → Render/Packaging
+
+여러 도구 비교 요청
 → Orchestrator → Intake/Sync → Design
-→ Remotion Agent + HyperFrames Agent 병렬
+→ 선택한 구현 Agent 병렬 (White Animation 포함 시 스크립트와 `.wav` 필요)
 → QA 비교 → Render/Packaging
 ```
 
@@ -340,7 +358,7 @@ YouTube는 업로드할 때 원본과 같은 프레임레이트로 인코딩하�
 | 4K 60fps | 3840x2160 | 60fps | 고사양 최종본, 매우 부드러운 모션 | 16코어 이상 CPU, RAM 128GB 권장, RTX 4080급 이상, 여유 SSD 500GB 이상 |
 | 쇼츠 1080p 30fps | 1080x1920 | 30fps | 일반 세로 숏폼 기본 | 8코어 CPU, RAM 32GB, RTX 3060/4060급 이상 권장 |
 
-Remotion과 HyperFrames는 프레임 생성 자체를 CUDA로 강제하는 구조가 아닙니다. GPU는 브라우저 렌더링 일부, WebGL/필터 처리, FFmpeg NVENC 인코딩에서 도움을 줄 수 있지만 병목은 보통 CPU, RAM, SSD입니다. 10분 이상 영상은 먼저 720p 또는 1080p draft로 싱크와 레이아웃을 검수한 뒤 최종 해상도로 렌더링하는 방식을 권장합니다.
+Remotion과 HyperFrames는 프레임 생성 자체를 CUDA로 강제하는 구조가 아닙니다. White Animation도 CPU 기반 Python/OpenCV/PyAV 렌더를 기본으로 합니다. GPU는 브라우저 렌더링 일부, WebGL/필터 처리, FFmpeg NVENC 인코딩에서 도움을 줄 수 있지만 병목은 보통 CPU, RAM, SSD입니다. 10분 이상 영상은 먼저 720p 또는 1080p draft로 싱크와 레이아웃을 검수한 뒤 최종 해상도로 렌더링하는 방식을 권장합니다.
 
 참고 문서: [YouTube recommended upload encoding settings](https://support.google.com/youtube/answer/1722171)
 
@@ -399,7 +417,7 @@ Voicebox로 만든 음성을 사용할 때도 사용자가 파일명을 맞출 �
 
 ## 영상 생성, 싱크, 레이아웃 검증 규칙
 
-아래 규칙은 사용자가 직접 수행해야 하는 절차가 아니라, Codex가 Remotion 또는 HyperFrames로 모션그래픽을 만들 때 따라야 하는 기준입니다. 세부 운영 규칙은 `AGENTS.md`를 기준으로 합니다.
+아래 규칙은 사용자가 직접 수행해야 하는 절차가 아니라, Codex가 Remotion, HyperFrames 또는 White Animation으로 영상을 만들 때 따라야 하는 기준입니다. 세부 운영 규칙은 `AGENTS.md`를 기준으로 합니다.
 
 ### 영상 생성 규칙
 

@@ -8,19 +8,19 @@
 - 새 영상 작업은 루트에 바로 만들지 않고 `YYYYMMDD_작업제목` 형식의 로컬 작업 폴더를 만든 뒤 진행합니다.
 - 날짜형 작업 폴더는 실행/제작 시마다 새로 생기는 개별 작업공간이므로 기본적으로 GitHub에 올리지 않습니다.
 - 루트 `AGENTS.md`는 에이전트가 따라야 할 작업 규칙입니다.
-- 루트 `DESIGN.md`는 모든 Remotion, HyperFrames 영상 작업의 공통 디자인 가이드입니다.
+- 루트 `DESIGN.md`는 Remotion·HyperFrames의 공통 디자인 가이드이며, White Animation에는 여백·가독성·싱크·검수 안전 규칙으로만 적용합니다.
 - 루트 `README.md`는 GitHub 저장소 방문자를 위한 온보딩 문서로 유지합니다. 에이전트 운영 규칙의 원문은 `AGENTS.md`를 기준으로 합니다.
 - 작업 폴더 루트 `README.md`는 만들거나 참조하지 않습니다. 작업별 상세 기록은 최종 응답과 필요한 산출물 경로로 정리합니다.
-- 새 영상 제작 요청을 받으면 `VoltAgent/awesome-design-md`의 `DESIGN.md` 종류를 리스트업해 사용자에게 선택지를 제시합니다. 사용자가 루트 기본값을 승인하면 루트 `DESIGN.md`만 사용합니다.
-- 새 영상 제작 요청에서 도구나 디자인 기준이 명시되지 않으면 작업 폴더 생성과 구현 전에 Remotion/HyperFrames 추천 승인 및 `awesome-design-md` 선택 또는 루트 `DESIGN.md` 기본값 승인을 먼저 받습니다. "바로 진행" 같은 포괄 지시만으로는 이 확인을 생략하지 않습니다.
+- 새 영상 제작 요청을 받으면 `VoltAgent/awesome-design-md`의 `DESIGN.md` 종류를 리스트업해 사용자에게 선택지를 제시합니다. 단, White Animation은 레포의 자체 스타일 가이드를 사용하므로 외부 디자인 기준을 제시하거나 사용자 승인을 받을 필요가 없습니다.
+- 새 영상 제작 요청에서 도구나 디자인 기준이 명시되지 않으면 작업 폴더 생성과 구현 전에 Remotion/HyperFrames 추천 승인을 받습니다. 스크립트와 `.wav`가 모두 있으면 White Animation도 선택지에 포함합니다. White Animation이 선택되면 자체 스타일 가이드로 진행하고, 그 외 도구에서만 `awesome-design-md` 선택 또는 루트 `DESIGN.md` 기본값 승인을 먼저 받습니다.
 - 첨부자료의 브랜드, 톤, 색상, 스타일 단서가 루트 `DESIGN.md`와 겹치면 사용자 명시 요청을 최우선으로 두고, `DESIGN.md`는 공통 제작 원칙, 첨부자료는 작업별 브랜드 보정값으로 다룹니다.
 - PDF, 문서, 기획안, URL만 제공되면 핵심 메시지, 대본 초안, 장면 구성, 인포그래픽 방향, 무음 또는 임시 타이밍 영상 초안까지 진행할 수 있습니다. 먼저 최종 싱크 영상이 아니라는 점을 설명합니다.
 - 나중에 제공된 음성/대본이 초안의 대본, 장면 구성, 톤과 잘 맞으면 타임라인 재조정과 재렌더로 진행할 수 있습니다. 메시지, 순서, 분량, 톤이 다르면 장면 구성과 디자인 방향을 재검토하거나 전면 재제작할 수 있음을 설명합니다.
 - PDF, 문서, 기획안, URL과 음성 파일 및 원본 스크립트가 함께 제공되면 음성 파일은 싱크 기준, 원본 스크립트는 내레이션 기준, PDF/문서/URL은 내용 보강과 스타일 참고 기준으로 사용합니다.
-- 음성 원본 파일은 HyperFrames와 Remotion 공통 소스이므로 각 작업 폴더의 `audio/` 안에서 관리합니다. 사용자가 첨부 파일명을 미리 맞출 필요는 없습니다.
+- 음성 원본 파일은 HyperFrames, Remotion, White Animation의 공통 싱크 소스이므로 각 작업 폴더의 `audio/` 안에서 관리합니다. 사용자가 첨부 파일명을 미리 맞출 필요는 없습니다.
 - 스크립트 기반 영상 작업은 초기 요청에 음성 파일과 스크립트 파일을 함께 첨부하도록 요청하고, 첨부 스크립트는 작업 폴더의 `script/` 안에서 음성용 `narration-script.txt`로 변환해 관리합니다.
-- 큰 영상 작업은 Orchestrator 중심의 서브에이전트 구성으로 나눌 수 있으며, Remotion Agent와 HyperFrames Agent는 사용자 요청 또는 Orchestrator 선택에 따라 조건부로 실행합니다.
-- 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, PDF/문서/URL, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천하고 사용자 확인을 받습니다.
+- 큰 영상 작업은 Orchestrator 중심의 서브에이전트 구성으로 나눌 수 있으며, Remotion Agent, HyperFrames Agent, White Animation Agent는 사용자 요청 또는 Orchestrator 선택에 따라 조건부로 실행합니다.
+- 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, PDF/문서/URL, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천하고 사용자 확인을 받습니다. 원본 스크립트와 `.wav`가 모두 있으면 White Animation도 선택지로 제시합니다.
 - 작업별 서브에이전트 지시서는 해당 작업 폴더의 `agent-briefs/`에 둡니다.
 
 ## 반복 작업 규칙

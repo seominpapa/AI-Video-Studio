@@ -34,6 +34,7 @@
 ## 2026-05-26 - Remotion Tailwind config in non-Tailwind projects
 
 - `create-video --no-tailwind` can still leave Tailwind-related dependencies or config in a generated Remotion project. If `remotion still` fails while scanning parent directories, remove unused Tailwind config hooks from `remotion.config.ts` before rendering.
+- Do not import task-root files such as `timeline/scenes.json` directly from Remotion `src/` if the bundler starts scanning parent directories and hits sandbox access errors. Keep `timeline/scenes.json` as the source of truth, copy it to a render-local generated file such as `src/scenes.generated.json`, and verify the two files match before rendering.
 
 ## 2026-05-30 - Korean line breaks and floating callouts
 
@@ -47,9 +48,52 @@
 - Keep labels inside the infographic, below the upper explanation, or in a side tray above the subtitle-safe area.
 - Review representative frames with the subtitle-safe area in mind; a visually clean infographic still fails if it leaves no room for the final caption.
 
+## 2026-06-07 - Korean numeric labels in motion graphics
+
+- Narration scripts can spell numbers in Korean for pronunciation, but on-screen labels and titles should prefer compact Arabic numerals for units and steps, such as `5단계`, `3개월`, `30분`, and `60%`.
+- When changing display numerals, update both the canonical `timeline/scenes.json` and the Remotion source data, then render representative frames from the final MP4.
+
+## 2026-06-07 - Step scene timing
+
+- Do not start a numbered step scene during the preamble that introduces the overall method. Start it at the actual `첫 번째/두 번째/... 스텝` narration, or 0.1-0.2 seconds before that phrase.
+- After changing scene boundaries, verify the previous scene still covers the preamble and render boundary frames before and after the new start time.
+- For step scenes with internal item highlights, do not divide the scene duration evenly. Use transcript timestamps for each highlighted item, such as email, meeting notes, report, summary, and Excel.
+
 ## 2026-06-13 - Voice loudness spikes after loudnorm
 
 - Integrated `loudnorm` can still leave short TTS/Voicebox sections noticeably louder than surrounding narration. Do not treat `-16 LUFS` alone as audio QA.
 - After creating `voice_normalized.wav`, scan 1-second RMS/peak windows and compare suspicious timestamps with nearby seconds.
 - If a user reports local volume spikes, preserve `voice_normalized.wav`, create a separate balanced file such as `voice_balanced.wav` with faded gain envelopes, replace the render audio copy, and re-render from source.
 - Record before/after RMS around the reported timestamps in the QA summary.
+
+## 2026-07-03 - npm prefix in empty task folders
+
+- Before running `npm install` in a newly created non-project task folder, create a minimal `package.json` or use an explicit project directory. Otherwise npm can resolve the prefix to the user home folder and install packages outside the task workspace.
+
+## 2026-07-04 - Final MP4 sample extraction
+
+- When extracting final MP4 QA samples from `timeline/scenes.json`, read the actual timeline schema before scripting. Current video timelines use `start` and `end`; using assumed fields such as `startSec` and `endSec` can silently extract every sample at 0 seconds.
+- After sample extraction, inspect `review-frames/final-samples/sample-times.txt` before trusting the contact sheet. If all timestamps are 0 or duplicated, regenerate the samples before final delivery.
+
+## 2026-07-05 - Remotion render paths with Korean task folders
+
+- If Remotion or esbuild fails under a Korean task-folder path with access or mojibake path errors, rerun the Remotion command with the Windows short path and sandbox escalation.
+- Do not invent a short alias such as `OUTPUT~1` for a directory that has not been confirmed with `cmd /c "for %I in (...) do @echo %~sI"`; Windows may create a literal `OUTPUT~1` folder. Render to a verified existing short path or move the output back into `outputs/` immediately and remove the temporary folder.
+- For scene-start review frames, use `ceil(scene.start * fps)` instead of `floor(scene.start * fps)` so the sampled frame is not just before the scene boundary.
+
+## 2026-07-05 - Mintlify lesson map density
+
+- Do not show all scene titles in the left `LESSON MAP` for long Korean lecture videos. It becomes too dense and makes every scene feel like the same docs layout.
+- Prefer a compact current-scene card plus 3-4 broad lesson phases, with only a small progress indicator.
+- Keep the right rail short as well, usually 3 key points or fewer, so the central infographic remains the main visual.
+
+## 2026-08-15 - Connector-layer ordering
+
+- Connector strokes must be rendered on a lower z-index than every node, card, pill, and text container. DOM order alone is not a safe layering rule for positioned Remotion elements.
+- When a connector is only decorative, route it through unused whitespace rather than a card interior. Re-render the affected full frame after any z-index or coordinate change.
+- Do not construct reusable arrowheads from rotated CSS borders. Use one SVG arrow primitive with a fixed tip, centerline, and rotation origin, then anchor its start and end to the actual card boundaries.
+
+## 2026-08-16 - White Animation PyAV concat and pen alpha
+
+- The upstream White Animation PyAV concat fallback can fail with non-monotonic timestamps when each source clip restarts PTS at zero. Keep the upstream repository unchanged and use a task-local merger that assigns continuous frame PTS and a fixed output time base.
+- An image edit that visually shows a checkerboard may still be an opaque checkerboard image. Before using an edited drawing-hand asset, verify the PNG has a real alpha channel and that a transparent corner pixel has alpha zero.

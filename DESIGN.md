@@ -1,6 +1,6 @@
 # Video Motion Design Guide
 
-이 문서는 이 루트 폴더의 모든 Remotion, HyperFrames 영상 작업에서 공통으로 참고하는 디자인 가이드입니다. 특정 작업 폴더나 특정 도구의 소스 파일이 아닙니다.
+이 문서는 이 루트 폴더의 모든 Remotion, HyperFrames 영상 작업의 시각 기준이며, White Animation에는 여백·가독성·싱크·검수 안전 규칙으로만 적용합니다. White Animation의 시각 기준은 `srt-whiteboard-animation` 레포의 자체 가이드이며, 별도 외부 `DESIGN.md`를 요청하지 않습니다.
 
 ## 기본 목적
 
