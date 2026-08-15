@@ -22,9 +22,9 @@
 ## 스크립트 기반 모션그래픽
 
 1. 루트 `DESIGN.md`와 `AGENTS.md`를 확인합니다.
-2. 도구가 지정되지 않았으면 첨부 스크립트, PDF/문서/URL, 영상 목적을 보고 Remotion 또는 HyperFrames를 추천하고 사용자 확인을 받습니다.
-3. `https://github.com/VoltAgent/awesome-design-md`의 컬렉션 또는 `design-md/` 폴더를 확인해 선택 가능한 `DESIGN.md` 종류를 사용자에게 반드시 리스트업합니다. 사용자가 외부 디자인 기준을 선택하거나 루트 `DESIGN.md` 기본값을 명확히 승인하기 전에는 구현을 시작하지 않습니다. "바로 진행" 같은 포괄 지시만으로는 이 확인을 생략하지 않습니다.
-4. 외부 `DESIGN.md`가 선택되면 선택한 이름, 출처 URL, 적용할 색상/타이포그래피/레이아웃 단서를 작업별 디자인 브리프에 기록합니다.
+2. 도구가 지정되지 않았으면 첨부 스크립트, PDF/문서/URL, 영상 목적을 보고 Remotion 또는 HyperFrames를 추천하고 사용자 확인을 받습니다. 원본 스크립트와 `.wav`가 모두 있으면 White Animation도 선택지로 제시합니다.
+3. White Animation이 선택되면 `srt-whiteboard-animation`의 자체 스타일 가이드를 시각 기준으로 적용하고, 별도 외부 `DESIGN.md`를 리스트업하거나 사용자 승인을 받지 않습니다. 루트 `DESIGN.md`는 여백·가독성·싱크·검수 안전 규칙에만 적용합니다. 그 외 도구는 `https://github.com/VoltAgent/awesome-design-md`의 컬렉션 또는 `design-md/` 폴더를 확인해 선택 가능한 `DESIGN.md` 종류를 사용자에게 반드시 리스트업합니다. 사용자가 외부 디자인 기준을 선택하거나 루트 `DESIGN.md` 기본값을 명확히 승인하기 전에는 구현을 시작하지 않습니다.
+4. 외부 `DESIGN.md`가 선택된 경우에만 선택한 이름, 출처 URL, 적용할 색상/타이포그래피/레이아웃 단서를 작업별 디자인 브리프에 기록합니다.
 5. 입력 자료를 구분합니다. PDF/문서/기획안/URL만 있으면 핵심 메시지, 대본 초안, 장면 구성, 인포그래픽 방향, 무음 또는 임시 타이밍 영상 초안까지 진행할 수 있습니다. 먼저 최종 싱크 영상이 아니라는 점을 설명합니다.
 6. 사용자가 초안 제작을 명시했다면 무음/임시 타이밍 초안으로 진행하고, 최종 영상이나 완성본을 요청했는데 음성 파일 또는 원본 스크립트가 없으면 필요한 파일을 먼저 받을지 초안으로 진행할지 확인합니다.
 7. 나중에 제공된 음성 파일과 원본 스크립트가 초안의 대본, 장면 구성, 톤과 잘 맞으면 타임라인 재조정과 재렌더로 진행합니다. 메시지, 순서, 분량, 톤이 다르면 기존 초안은 참고자료로 두고 장면 구성과 디자인 방향을 재검토하거나 전면 재제작할 수 있음을 설명합니다.
@@ -43,7 +43,7 @@
 20. 음성 길이를 확인합니다.
 21. 스크립트를 장면 단위 타임라인으로 나눕니다.
 22. 장면마다 핵심 메시지, 인포그래픽 구조, 텍스트 라벨을 정하고 하단 18-22% 자막 안전영역을 먼저 예약한 뒤 승인된 장면 타임라인을 `timeline/scenes.json`에 저장합니다.
-23. Remotion 또는 HyperFrames로 구현할 때 `timeline/scenes.json`과 같은 장면 수, 순서, 시작/종료 시간을 유지합니다.
+23. Remotion, HyperFrames 또는 White Animation으로 구현할 때 `timeline/scenes.json`과 같은 장면 수, 순서, 시작/종료 시간을 유지합니다. White Animation은 실제 전사에서 생성한 `transcript/subtitles.srt`를 사용하고, `assets/whiteboard/`의 선화·`.annotation.json`을 SRT 서사 순서에 맞춰 단계별 승인 후 렌더합니다.
 24. 대표 프레임을 `review-frames/`에 렌더링해 텍스트 겹침, 텍스트 잘림, 안전 여백, 하단 자막 안전영역 침범, 명암 대비, 타이밍을 확인합니다.
 25. 장면 경계마다 시작 0.2초 전, 시작 프레임, 시작 0.2초 후를 확인해 전환 지연이나 빈 화면이 없는지 검수합니다.
 26. 싱크 불일치가 있으면 전체 타임라인을 1초 단위와 장면 전환 전후 프레임으로 샘플링하고 컨택트 시트를 만들어 확인합니다.
@@ -51,16 +51,19 @@
 28. FFmpeg 또는 ffprobe로 비디오 길이, 기준 음성 길이, 오디오 트랙 시작 오프셋, 비디오/오디오 트랙 포함 여부를 확인합니다.
 29. 최종 MP4 샘플 프레임에 검수용 디버그 UI가 남아 있지 않은지 확인합니다.
 30. Remotion 프로젝트를 렌더한 뒤 시스템 FFmpeg가 없으면 `remotion-project/remotion-video/node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe`와 `ffprobe.exe`를 먼저 확인합니다. 있으면 별도 설치 없이 최종 MP4 검수에 사용합니다.
+31. 로컬 전사에서 `cublas64_12.dll` 같은 CUDA DLL 오류가 나면 GPU 자동 감지를 피하고 `--device cpu --compute-type int8`로 다시 실행합니다.
+32. `create-video --blank --no-tailwind`로 만든 Remotion 프로젝트라도 Tailwind 설정이 남아 상위 경로 스캔 오류를 낼 수 있습니다. Tailwind를 쓰지 않는 영상이면 `remotion.config.ts`의 Tailwind override와 `src/index.css`의 Tailwind import를 제거한 뒤 렌더합니다.
 
 ## Codex Desktop video plugins
 
-1. Remotion과 HyperFrames는 Codex Desktop 플러그인/스킬을 작업 보조 도구로 사용합니다.
+1. Remotion과 HyperFrames는 Codex Desktop 플러그인/스킬을 작업 보조 도구로 사용하고, White Animation은 작업별 `source-whiteboard/`의 오픈소스 렌더러를 사용합니다.
 2. 실제 렌더는 작업 폴더 안의 코드와 로컬 Node/FFmpeg/전사 의존성으로 수행합니다.
-3. 새 작업 프롬프트에는 영상 목적, 화면비, 길이, 첨부 음성 파일, 첨부 스크립트 파일, 원하는 도구(Remotion 또는 HyperFrames, 선택 사항), 디자인 기준(루트 `DESIGN.md` 기본값 또는 `awesome-design-md` 선택), 출력 파일명을 포함합니다.
-4. 도구가 지정되지 않았으면 스크립트, PDF/문서/URL, 영상 목적을 분석해 숫자/통계/차트/반복 템플릿 중심은 Remotion, 브랜드 소개/타이포그래피/웹 기반 감각적 모션 중심은 HyperFrames를 추천하고 사용자 확인을 받습니다.
-5. 두 도구가 모두 적합하거나 기준이 불명확하면 추천 도구, 이유, 대안 도구를 설명하고 사용자 확인을 받습니다.
+3. 새 작업 프롬프트에는 영상 목적, 화면비, 길이, 첨부 음성 파일, 첨부 스크립트 파일, 원하는 도구(Remotion, HyperFrames 또는 White Animation, 선택 사항), 출력 파일명을 포함합니다. White Animation은 스크립트와 `.wav`가 모두 있을 때만 선택하고 자체 스타일 가이드를 사용하므로 별도 디자인 기준을 받지 않습니다.
+4. 도구가 지정되지 않았으면 스크립트, PDF/문서/URL, 영상 목적을 분석해 숫자/통계/차트/반복 템플릿 중심은 Remotion, 브랜드 소개/타이포그래피/웹 기반 감각적 모션 중심은 HyperFrames를 추천하고 사용자 확인을 받습니다. 스크립트와 `.wav`가 모두 있으며 손그림 설명·이야기형 강의·개념 시각화가 중심이면 White Animation도 추천합니다.
+5. 여러 도구가 모두 적합하거나 기준이 불명확하면 추천 도구, 이유, 대안 도구를 설명하고 사용자 확인을 받습니다.
 6. Remotion은 React/TypeScript 컴포지션을 작성해 `npx.cmd remotion render`로 MP4를 만듭니다.
 7. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
+8. White Animation은 `geeklee/srt-whiteboard-animation`을 작업별 `source-whiteboard/`에 준비하고, 실제 전사 SRT → 선화 → 픽셀 영역 표기/미리보기 → 스트림 필기 렌더 순서로 MP4를 만듭니다.
 
 ## Subagent video production
 
@@ -69,12 +72,13 @@
 3. Design Agent가 `DESIGN.md` 기준 비주얼 시스템, 안전 영역, 인포그래픽 구조, 텍스트 밀도, 장면별 디자인 브리프를 만듭니다. 공통 스타일 설계는 Sync와 병렬 가능하지만 장면별 정확한 타이밍은 타임라인 승인 뒤 확정합니다.
 4. 사용자가 Remotion을 요구하면 Remotion Agent만 `remotion-project/`를 담당합니다.
 5. 사용자가 HyperFrames를 요구하면 HyperFrames Agent만 `source-hyperframes/`를 담당합니다.
-6. 사용자가 두 도구 비교 제작을 요청하면 Remotion Agent와 HyperFrames Agent를 병렬로 실행할 수 있습니다.
-7. 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, PDF/문서/URL, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 Remotion 또는 HyperFrames를 추천하고 사용자 확인을 받습니다.
-8. QA Agent는 샘플 프레임 목록, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 경계 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부와 오디오 시작 오프셋을 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
-9. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
-10. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
-11. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
+6. 사용자가 White Animation을 요구하면 White Animation Agent만 `source-whiteboard/`와 `assets/whiteboard/`를 담당합니다. 이 요청에는 스크립트와 `.wav`가 모두 필요합니다.
+7. 사용자가 여러 도구 비교 제작을 요청하면 해당 구현 Agent를 병렬로 실행할 수 있습니다. White Animation을 비교 대상으로 포함하려면 스크립트와 `.wav`가 모두 있어야 합니다.
+8. 사용자가 도구를 지정하지 않으면 Orchestrator가 스크립트, PDF/문서/URL, 영상 목적, 데이터/차트 비중, 반복 제작 가능성, 모션 감각 우선순위를 보고 적합한 도구를 추천하고 사용자 확인을 받습니다.
+9. QA Agent는 샘플 프레임 목록, 텍스트 겹침/잘림, 안전 여백, 명암 대비, 장면 경계 싱크, 디버그 UI 제거, 오디오 트랙 포함 여부와 오디오 시작 오프셋을 검수합니다. 검수 계획은 구현과 병렬로 준비하고, 최종 합격 판정은 렌더 이후에 합니다.
+10. Render/Packaging Agent는 최종 MP4 렌더, 오디오 mux/check, `outputs/` 정리, 최종 산출물 검증 요약을 담당합니다.
+11. 모든 구현 Agent는 `audio/`의 기준 음성 파일, `transcript/sentences.json`, `timeline/scenes.json`의 승인된 장면 타임라인을 공통 기준으로 사용하고, 같은 파일이나 같은 도구 소스 폴더를 동시에 수정하지 않습니다.
+12. 작업별 서브에이전트 지시서는 `agent-briefs/`에 역할별 Markdown 파일로 둡니다. 공통 역할 규칙은 루트 `AGENTS.md`와 `memory/workflows.md`를 기준으로 합니다.
 
 ## Git ignore policy
 
@@ -82,6 +86,16 @@
 2. 날짜형 작업 폴더(`YYYYMMDD_작업제목/`)는 개별 로컬 작업공간으로 보고 기본적으로 Git 추적 대상에서 제외합니다.
 3. `outputs/`, `review-frames/`, 작업 중 복사하거나 변환한 음성 파일, `script/`, `transcript/`, `timeline/`, `node_modules/`, `.venv/`, 캐시와 로그도 Git 추적 대상에서 제외합니다.
 4. 이미 추적 중인 작업 폴더나 산출물은 `.gitignore`만으로 빠지지 않으므로 필요하면 `git rm --cached`로 인덱스에서만 제거합니다.
+
+## Short-form motion graphics fast path
+
+1. For a simple 1–3 minute motion graphic with both narration and script already supplied, target the first low-resolution full preview within 10 minutes when dependencies are cached.
+2. Collapse the workflow to three gates: `input/sync`, `single-pass scene implementation`, and `one final QA/render`.
+3. Do not create per-stage product-grade validators, large TDD suites, or separate specification/quality-review agents unless an actual defect requires them.
+4. Use one implementation owner through completion and perform one visual review on a contact sheet rendered from a single preview or final MP4.
+5. Start scene implementation as soon as transcript anchors exist; do not require audio-analysis, transcript-validator, timeline-validator, and architecture-shell projects to finish before any scene is visible.
+6. If a tool command produces no output for 90 seconds, inspect it immediately. Retry sandbox/network failures through the approved path once, and split slow patches instead of waiting indefinitely.
+7. For these short jobs, status documentation should be a concise final QA summary, not a task-by-task development journal.
 
 ## README audience
 

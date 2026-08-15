@@ -39,3 +39,10 @@
 
 - 모션그래픽은 인포그래픽 중심 레퍼런스처럼 인포그래픽을 중심으로 설계하고, 화면 하단 18-22%는 자막 안전영역으로 먼저 비워둡니다. 핵심 인포그래픽, 라벨, 장식, 진행 막대는 이 영역에 배치하지 않습니다.
 - 장면 라벨은 하단 자막 영역 대신 인포그래픽 내부, 상단 설명 아래, 또는 측면 트레이에 배치합니다.
+
+## 2026-08-16
+
+- 제작 도구 선택지에 White Animation을 추가한다. 이 모드는 `geeklee/srt-whiteboard-animation`(MIT)을 작업별 `source-whiteboard/`에서 사용하며, 원본 스크립트와 `.wav` 음성 파일이 모두 첨부된 경우에만 제시한다.
+- White Animation의 싱크 기준은 로컬 전사 결과 `transcript/sentences.json`과 같은 실행에서 생성한 `transcript/subtitles.srt`다. 추정 타임라인 SRT는 최종 렌더에 사용하지 않는다.
+- White Animation의 펜은 원본 레포 파일을 보존한 상태에서 작업별 정리 사본을 사용한다. 펜과 손의 외형·투명 배경은 유지하고 펜대의 중국어만 제거한다.
+- White Animation은 `srt-whiteboard-animation`의 자체 스타일 가이드를 시각 기준으로 사용한다. 외부 `DESIGN.md` 선택이나 사용자 디자인 승인은 요구하지 않으며, 루트 `DESIGN.md`는 여백·가독성·싱크·검수 안전 규칙에만 적용한다.

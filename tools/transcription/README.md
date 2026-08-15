@@ -1,6 +1,6 @@
 # Local Transcription Tool
 
-이 도구는 Remotion/HyperFrames 영상 제작 전에 `voiceover.wav`에서 문장별 타임코드를 만들기 위한 로컬 전사 파이프라인입니다.
+이 도구는 Remotion/HyperFrames/White Animation 영상 제작 전에 `voiceover.wav`에서 문장별 타임코드를 만들기 위한 로컬 전사 파이프라인입니다.
 
 ## 1. 설치
 
@@ -33,7 +33,7 @@ python -m venv .\tools\transcription\.venv
 
 - `sentences.json`: 영상 타임라인의 기준 파일
 - `timeline.json`: 호환용 동일 내용
-- `subtitles.srt`: 자막 검수용
+- `subtitles.srt`: 자막 검수용이며, White Animation 선택 시 `srt-whiteboard-animation`의 입력 SRT로 사용
 - `README.md`: 전사 요약
 
 ## 4. 임시 추정 타임라인
