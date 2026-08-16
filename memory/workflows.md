@@ -50,7 +50,7 @@
 27. 최종 MP4를 `outputs/`에 렌더링합니다.
 28. FFmpeg 또는 ffprobe로 비디오 길이, 기준 음성 길이, 오디오 트랙 시작 오프셋, 비디오/오디오 트랙 포함 여부를 확인합니다.
 29. 최종 MP4 샘플 프레임에 검수용 디버그 UI가 남아 있지 않은지 확인합니다.
-30. Remotion 프로젝트를 렌더한 뒤 시스템 FFmpeg가 없으면 `remotion-project/remotion-video/node_modules/@remotion/compositor-win32-x64-msvc/ffmpeg.exe`와 `ffprobe.exe`를 먼저 확인합니다. 있으면 별도 설치 없이 최종 MP4 검수에 사용합니다.
+30. Remotion 프로젝트의 `@remotion/compositor-win32-x64-msvc` FFmpeg를 재사용할 때는 `ffmpeg.exe`·`ffprobe.exe`만 복사하지 않습니다. `avdevice-*.dll`, `avcodec-*.dll` 등을 포함한 전체 runtime 디렉터리를 함께 두고, 두 실행 파일의 `-version` 실행이 모두 성공한 경우에만 최종 MP4 합성·검수에 사용합니다. Windows 검증에서는 DLL 오류 대화상자를 억제하고 명확한 비정상 종료로 처리합니다.
 31. 로컬 전사에서 `cublas64_12.dll` 같은 CUDA DLL 오류가 나면 GPU 자동 감지를 피하고 `--device cpu --compute-type int8`로 다시 실행합니다.
 32. `create-video --blank --no-tailwind`로 만든 Remotion 프로젝트라도 Tailwind 설정이 남아 상위 경로 스캔 오류를 낼 수 있습니다. Tailwind를 쓰지 않는 영상이면 `remotion.config.ts`의 Tailwind override와 `src/index.css`의 Tailwind import를 제거한 뒤 렌더합니다.
 
@@ -65,6 +65,17 @@
 7. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
 8. White Animation은 `geeklee/srt-whiteboard-animation`을 작업별 `source-whiteboard/`에 준비하고, 실제 전사 SRT → 선화 → 픽셀 영역 표기/미리보기 → 스트림 필기 렌더 순서로 MP4를 만듭니다.
 9. Remotion 또는 HyperFrames에 Anime.js/Motion 효과가 필요하면 해당 작업의 `package.json` 폴더에서만 `npm.cmd install animejs motion`을 실행합니다. Anime.js는 timeline/SVG/stagger, Motion은 React 또는 JavaScript spring/layout/stagger 효과에 사용하되, 한 요소의 한 속성을 GSAP·CSS를 포함한 둘 이상의 엔진이 동시에 제어하지 않게 합니다. Remotion에서는 프레임 기반 타임라인을 유지하고 시작·중간·종료 still frame으로 검수합니다.
+
+## Script-ordered motion event contract
+
+1. 장면 안에서 내레이션 순서에 맞춘 세부 모션이 필요하면 `transcript/sentences.json`과 `timeline/scenes.json`을 바탕으로 `timeline/motion-events.json`을 만듭니다. 각 이벤트에는 절대 `start`/`end`, 전사 인덱스, 장면 ID, 발화 구절, 시각 대상, 모션 역할을 기록합니다.
+2. 전사 인덱스가 모션 이벤트에 누락·중복 없이 한 번씩 포함되는지, 모든 이벤트가 해당 장면 경계 안에 있는지 구현 전에 검증합니다.
+3. Remotion에서 Anime.js를 주요 안무 엔진으로 쓸 때는 `autoplay: false`인 타임라인이 plain JavaScript 상태 객체만 갱신하게 하고, `useCurrentFrame()/fps`로 계산한 밀리초를 `seek()`에 전달합니다. DOM mutation, RAF, 실제 시간, CSS transition은 싱크 기준으로 사용하지 않습니다.
+4. Motion.dev는 Anime.js가 계산한 숫자 상태를 `motion.div`/`motion.path` 등에 표현하는 레이어로만 사용합니다. `animate`, `useAnimate`, `useSpring`, `layout`, hover, scroll, gesture처럼 실제 런타임 시간에 의존하는 기능은 최종 렌더에서 사용하지 않습니다.
+5. 카드·칩·연결선·게이트 같은 실제 인포그래픽 요소가 이벤트 큐를 소비해야 합니다. 발화 문구 배지나 진행 레일 같은 검수 UI를 최종 영상에 넣는 것으로 세부 모션을 대체하지 않습니다.
+6. 각 장면의 첫 프레임에는 제목뿐 아니라 핵심 인포그래픽도 식별 가능해야 합니다. 첫 이벤트는 시작 프레임의 기본 상태로 보이게 하고, 이후 이벤트만 전사 시각에 맞춰 순차 공개합니다.
+7. HyperFrames가 같은 이벤트표를 소비할 때는 로컬 동기 사본을 빌드 단계에서 만들고, GSAP의 paused 타임라인을 동기적으로 구성해 `window.__timelines`에 등록합니다. HyperFrames에서는 GSAP를 단일 모션 엔진으로 유지하고 Anime.js/Motion 런타임을 병행하지 않습니다.
+8. 완료 전 동일 still 프레임을 두 번 렌더해 해시가 같은지 확인하고, 장면 시작 정확 프레임 및 경계 전후 0.2초, 대표 이벤트 시각을 검수합니다.
 
 ## Subagent video production
 

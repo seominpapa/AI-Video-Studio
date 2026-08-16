@@ -97,3 +97,15 @@
 
 - The upstream White Animation PyAV concat fallback can fail with non-monotonic timestamps when each source clip restarts PTS at zero. Keep the upstream repository unchanged and use a task-local merger that assigns continuous frame PTS and a fixed output time base.
 - An image edit that visually shows a checkerboard may still be an opaque checkerboard image. Before using an edited drawing-hand asset, verify the PNG has a real alpha channel and that a transparent corner pixel has alpha zero.
+
+## 2026-08-16 - Remotion FFmpeg shared runtime dependencies
+
+- Do not copy only `ffmpeg.exe` or `ffprobe.exe` out of `@remotion/compositor-win32-x64-msvc`. They are shared builds and can require adjacent files such as `avdevice-61.dll`, `avcodec-61.dll`, and runtime support DLLs.
+- Keep the complete runtime directory together and validate both executables with `-version` before use. On Windows, suppress critical-error dialogs during this readiness check so a missing DLL becomes a clear nonzero exit instead of a blocking popup.
+- Prefer a runnable system `ffmpeg`/`ffprobe` pair. If PATH has no valid pair, use a task-local complete runtime directory; never treat executable presence alone as readiness.
+
+## 2026-08-16 - Render-safe card boundaries
+
+- Do not rely on a 1px pale or near-black hairline as the only boundary of a card, node, chip, or diagram container in a compressed video. It can disappear or look muddy after H.264 encoding and downscaling.
+- Keep 1px hairlines for background dividers only. Use a distinct, render-safe border token at 2px for ordinary bounded components, and a 3px accent outline only for the active state.
+- When a user reports weak outlines, update the design brief and every supported implementation token set together (for example, Remotion theme and HyperFrames CSS) before the next render.
