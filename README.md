@@ -74,6 +74,18 @@ PDF, 문서, 기획안, URL과 음성 파일, 원본 스크립트가 함께 제�
 
 Remotion과 HyperFrames는 Codex Desktop 플러그인을 작업 보조 도구로 사용합니다. White Animation은 작업별 오픈소스 렌더러를 사용합니다. 실제 소스와 결과물은 모두 작업 폴더 안에 생성됩니다.
 
+### Anime.js와 Motion 효과
+
+Remotion과 HyperFrames 작업에서는 필요할 때 [Anime.js](https://animejs.com/documentation/)와 [Motion](https://motion.dev/docs)를 해당 작업 프로젝트에 설치해 효과를 사용할 수 있습니다. Anime.js는 SVG 드로잉·stagger·타임라인 효과에, Motion은 React spring·레이아웃 전환 또는 JavaScript spring·stagger 효과에 적합합니다. 두 라이브러리를 루트에 설치하지 않습니다.
+
+```powershell
+# Remotion: remotion-project/remotion-video/ 안에서
+# HyperFrames: source-hyperframes/ 안에서
+npm.cmd install animejs motion
+```
+
+같은 요소의 `transform`, `opacity`, SVG path 속성은 Anime.js, Motion, GSAP, CSS 중 하나만 제어합니다. Remotion 최종 렌더에서는 프레임 기반 타임라인을 기준으로 두고, 라이브러리 효과를 쓴 장면은 시작·중간·종료 still frame으로 싱크와 재현성을 검수합니다. Motion의 hover·drag·scroll처럼 상호작용이 필요한 효과는 웹 미리보기 전용입니다. [Anime.js 설치·import 안내](https://animejs.com/documentation/getting-started/installation), [Motion React 설치 안내](https://motion.dev/docs/react)를 참고합니다.
+
 
 대부분의 작업은 터미널 명령어를 직접 입력하지 않고, Codex에게 자연어로 요청하면 됩니다. 이 저장소는 Codex가 일관되게 작업할 수 있도록 공통 규칙, 디자인 기준, 로컬 전사 도구를 모아둔 루트 폴더입니다.
 

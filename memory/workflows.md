@@ -64,6 +64,7 @@
 6. Remotion은 React/TypeScript 컴포지션을 작성해 `npx.cmd remotion render`로 MP4를 만듭니다.
 7. HyperFrames는 HTML/CSS/GSAP 컴포지션을 작성해 `npx.cmd hyperframes render`로 MP4를 만듭니다.
 8. White Animation은 `geeklee/srt-whiteboard-animation`을 작업별 `source-whiteboard/`에 준비하고, 실제 전사 SRT → 선화 → 픽셀 영역 표기/미리보기 → 스트림 필기 렌더 순서로 MP4를 만듭니다.
+9. Remotion 또는 HyperFrames에 Anime.js/Motion 효과가 필요하면 해당 작업의 `package.json` 폴더에서만 `npm.cmd install animejs motion`을 실행합니다. Anime.js는 timeline/SVG/stagger, Motion은 React 또는 JavaScript spring/layout/stagger 효과에 사용하되, 한 요소의 한 속성을 GSAP·CSS를 포함한 둘 이상의 엔진이 동시에 제어하지 않게 합니다. Remotion에서는 프레임 기반 타임라인을 유지하고 시작·중간·종료 still frame으로 검수합니다.
 
 ## Subagent video production
 

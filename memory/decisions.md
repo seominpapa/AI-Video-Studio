@@ -46,3 +46,4 @@
 - White Animation의 싱크 기준은 로컬 전사 결과 `transcript/sentences.json`과 같은 실행에서 생성한 `transcript/subtitles.srt`다. 추정 타임라인 SRT는 최종 렌더에 사용하지 않는다.
 - White Animation의 펜은 원본 레포 파일을 보존한 상태에서 작업별 정리 사본을 사용한다. 펜과 손의 외형·투명 배경은 유지하고 펜대의 중국어만 제거한다.
 - White Animation은 `srt-whiteboard-animation`의 자체 스타일 가이드를 시각 기준으로 사용한다. 외부 `DESIGN.md` 선택이나 사용자 디자인 승인은 요구하지 않으며, 루트 `DESIGN.md`는 여백·가독성·싱크·검수 안전 규칙에만 적용한다.
+- Remotion과 HyperFrames의 선택 효과 라이브러리로 Anime.js와 Motion을 작업별 프로젝트 의존성으로 사용한다. 같은 속성은 Anime.js·Motion·GSAP·CSS 중 하나의 엔진만 제어하며, Remotion 최종본은 프레임 기반 타임라인과 still render로 재현성을 검수한다.

@@ -271,6 +271,21 @@ npx.cmd hyperframes render --output ..\outputs\hyperframes-render.mp4 --quality 
 
 HyperFrames 렌더에서 오디오가 누락되면 FFmpeg로 원본 음성과 다시 mux합니다.
 
+## Anime.js와 Motion 효과
+
+Remotion 또는 HyperFrames 모션그래픽 작업에서는 사용자가 요청하거나 장면의 표현에 도움이 될 때 [Anime.js](https://animejs.com/documentation/)와 [Motion](https://motion.dev/docs)을 작업별 의존성으로 설치해 사용할 수 있습니다. 루트에는 설치하지 않고, Remotion은 실제 `remotion-video/`, HyperFrames는 `source-hyperframes/`의 `package.json`이 있는 폴더에서만 아래 명령을 실행합니다.
+
+```powershell
+npm.cmd install animejs motion
+```
+
+- Anime.js는 장면 내 순차 등장, SVG path draw, stagger, 정교한 easing 및 타임라인 효과에 사용합니다. 모듈 import는 `import { animate } from 'animejs'`를 사용합니다.
+- Motion은 Remotion의 React 컴포넌트 모션과 spring 기반 전환에 `import { motion } from 'motion/react'`를, HyperFrames의 JavaScript 효과에는 `import { animate, spring, stagger } from 'motion'`를 사용합니다.
+- 같은 요소의 같은 CSS/SVG 속성은 Anime.js, Motion, GSAP, CSS keyframes 중 **하나의 엔진만** 소유합니다. 특히 HyperFrames의 기존 GSAP 타임라인과 Anime.js/Motion이 같은 `transform`, `opacity`, `path` 값을 동시에 쓰지 않게 합니다.
+- Remotion은 프레임 기반 렌더가 기준입니다. `useCurrentFrame()`과 `fps`에서 계산한 시간·상태를 장면 기준으로 유지하고, `requestAnimationFrame`, scroll, hover, drag, 실제 시간(`Date.now`)에만 의존하는 Anime.js/Motion 효과를 최종 렌더의 필수 타이밍으로 쓰지 않습니다. 런타임 애니메이션을 적용했다면 장면의 시작·중간·종료 still render를 만들어 프레임 재현성과 싱크를 확인합니다.
+- 사용자 상호작용 전용 Motion 제스처와 scroll 효과는 MP4 최종본의 효과로 간주하지 않습니다. Studio/웹 미리보기 전용이라면 최종 composition과 분리합니다.
+- 설치한 패키지와 사용한 효과·대상 장면·검수 프레임은 작업별 `agent-briefs/` 또는 QA 요약에 기록합니다. 의존성 설치 후에는 도구별 lint/validate와 실제 still render를 실행합니다.
+
 ## White Animation 작업
 
 White Animation은 [geeklee/srt-whiteboard-animation](https://github.com/geeklee/srt-whiteboard-animation)의 MIT 라이선스 도구를 작업별 `source-whiteboard/`에서 사용합니다. 이 모드는 실제 발화 타임코드가 담긴 SRT가 필요하므로, 원본 스크립트와 `.wav` 음성 파일이 모두 제공되어 로컬 전사 결과 `transcript/subtitles.srt`를 만들 수 있을 때에만 선택합니다. `--allow-estimated`로 생성한 추정 SRT는 최종 White Animation 렌더에 사용할 수 없습니다.
